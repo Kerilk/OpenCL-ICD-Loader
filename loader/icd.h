@@ -33,8 +33,21 @@
 #define CL_USE_DEPRECATED_OPENCL_1_2_APIS
 #endif
 
+#ifndef CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_0_APIS
+#endif
+
+#ifndef CL_USE_DEPRECATED_OPENCL_2_1_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_1_APIS
+#endif
+
+#ifndef CL_USE_DEPRECATED_OPENCL_2_2_APIS
+#define CL_USE_DEPRECATED_OPENCL_2_2_APIS
+#endif
+
 #include <CL/cl.h>
 #include <CL/cl_ext.h>
+#include "icd_dispatch.h"
 
 /*
  * type definitions
@@ -70,11 +83,17 @@ struct KHRicdVendorRec
     // the extension suffix for this platform
     char *suffix;
 
+    // the version for this platform
+    char *version;
+
     // function pointer to the ICD platform IDs extracted from the library
     pfn_clGetExtensionFunctionAddress clGetExtensionFunctionAddress;
 
     // the platform retrieved from clGetIcdPlatformIDsKHR
     cl_platform_id platform;
+
+    // the platform dispatch table
+    cl_icd_dispatch dispatch;
 
     // next vendor in the list vendors
     KHRicdVendor *next;

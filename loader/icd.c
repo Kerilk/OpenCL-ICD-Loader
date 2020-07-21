@@ -110,6 +110,11 @@ void khrIcdVendorAdd(const char *libraryName)
         KHRicdVendor* vendor = NULL;
         char *suffix;
         size_t suffixSize;
+        char *version;
+        size_t versionSize;
+        int major, minor;
+        size_t dispatchSize;
+        size_t loaderDispatchNumEntries;
 
         // call clGetPlatformInfo on the returned platform to get the suffix
         if (!platforms[i])
@@ -129,6 +134,7 @@ void khrIcdVendorAdd(const char *libraryName)
         suffix = (char *)malloc(suffixSize);
         if (!suffix)
         {
+            KHR_ICD_TRACE("failed to allocate memory\n");
             continue;
         }
         result = platforms[i]->dispatch->clGetPlatformInfo(
@@ -136,10 +142,43 @@ void khrIcdVendorAdd(const char *libraryName)
             CL_PLATFORM_ICD_SUFFIX_KHR,
             suffixSize,
             suffix,
-            NULL);            
+            NULL);
         if (CL_SUCCESS != result)
         {
             free(suffix);
+            continue;
+        }
+        // call clGetPlatformInfo on the returned platform to get the version
+        result = platforms[i]->dispatch->clGetPlatformInfo(
+            platforms[i],
+            CL_PLATFORM_VERSION,
+            0,
+            NULL,
+            &versionSize);
+        if (CL_SUCCESS != result || versionSize < strlen("OpenCL X.X") + 1)
+        {
+            free(suffix);
+            continue;
+        }
+        version = (char *)malloc(versionSize);
+        if (!version)
+        {
+            free(suffix);
+            KHR_ICD_TRACE("failed to allocate memory\n");
+            continue;
+        }
+        result = platforms[i]->dispatch->clGetPlatformInfo(
+            platforms[i],
+            CL_PLATFORM_VERSION,
+            versionSize,
+            version,
+            NULL);
+        major = version[7] - '0';
+        minor = version[9] - '0';
+        if (CL_SUCCESS != result || major <= 0 || major > 9 || minor < 0 || minor > 9)
+        {
+            free(suffix);
+            free(version);
             continue;
         }
 
@@ -148,6 +187,7 @@ void khrIcdVendorAdd(const char *libraryName)
         if (!vendor) 
         {
             free(suffix);
+            free(version);
             KHR_ICD_TRACE("failed to allocate memory\n");
             continue;
         }
@@ -158,6 +198,7 @@ void khrIcdVendorAdd(const char *libraryName)
         if (!vendor->library) 
         {
             free(suffix);
+            free(version);
             free(vendor);
             KHR_ICD_TRACE("failed get platform handle to library\n");
             continue;
@@ -165,6 +206,38 @@ void khrIcdVendorAdd(const char *libraryName)
         vendor->clGetExtensionFunctionAddress = p_clGetExtensionFunctionAddress;
         vendor->platform = platforms[i];
         vendor->suffix = suffix;
+        vendor->version = version;
+
+        // populate the dispatch table
+        if (major == 1 && minor == 0) {
+          dispatchSize = 81;
+        } else if (major == 1 && minor == 1) {
+          dispatchSize = 93;
+        } else if (major == 1 && minor == 2) {
+          dispatchSize = 123;
+        } else if (major == 2 && minor == 0) {
+          dispatchSize = 137;
+        } else if (major == 2 && minor == 1) {
+          dispatchSize = 144;
+        } else if (major == 2 && minor == 2) {
+          dispatchSize = 146;
+        } else {
+          dispatchSize = 148;
+        }
+        loaderDispatchNumEntries = sizeof(cl_icd_dispatch)/sizeof(void*);
+        if (dispatchSize > loaderDispatchNumEntries)
+            dispatchSize = loaderDispatchNumEntries;
+        for (cl_uint j = 0; j < dispatchSize; j++) {
+            ((void **)&(vendor->dispatch))[j] = ((void **)(platforms[i]->dispatch))[j];
+        }
+        for (cl_uint j = dispatchSize; j < loaderDispatchNumEntries; j++) {
+            ((void **)&(vendor->dispatch))[j] = NULL;
+        }
+        //substitute the platform dispatch table with ours
+        printf("Addresses clGetPlatformInfo %p %p", platforms[i]->dispatch->clGetPlatformInfo, vendor->dispatch.clGetPlatformInfo);
+        platforms[i]->dispatch = &(vendor->dispatch);
+        printf(" %p\n", platforms[i]->dispatch->clGetPlatformInfo);
+
 
         // add this vendor to the list of vendors at the tail
         {
