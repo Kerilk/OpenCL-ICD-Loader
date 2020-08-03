@@ -211,9 +211,32 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
     // to get the extension function address.
 
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, NULL);
-    return platform->dispatch->clGetExtensionFunctionAddressForPlatform(
+    return ((cl_icd_dispatch *)platform->dispatch->clUnloadCompiler)->clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
+}
+
+CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
+    cl_platform_id platform,
+    cl_device_type device_type,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0
+{
+    cl_uint _num_devices;
+    if (num_devices == 0)
+        num_devices = &_num_devices;
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    cl_int result = ((cl_icd_dispatch *)platform->dispatch->clUnloadCompiler)->clGetDeviceIDs(
+        platform,
+        device_type,
+        num_entries,
+        devices,
+        num_devices);
+    if (result == CL_SUCCESS && devices)
+        for (cl_uint i = 0; i < (num_entries < *num_devices ? num_entries : *num_devices); i++)
+            devices[i]->dispatch->clUnloadCompiler = platform->dispatch->clUnloadCompiler;
+    return result;
 }
 
 #ifdef CL_VERSION_3_0
@@ -229,14 +252,18 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
+    cl_mem result;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateBufferWithProperties(
+    result = ((cl_icd_dispatch *)context->dispatch->clUnloadCompiler)->clCreateBufferWithProperties(
         context,
         properties,
         flags,
         size,
         host_ptr,
         errcode_ret);
+    if (result)
+        result->dispatch->clUnloadCompiler = context->dispatch->clUnloadCompiler;
+    return result;
 }
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
@@ -248,8 +275,9 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
     void* host_ptr,
     cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
 {
+    cl_mem result;
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
-    return context->dispatch->clCreateImageWithProperties(
+    result = ((cl_icd_dispatch *)context->dispatch->clUnloadCompiler)->clCreateImageWithProperties(
         context,
         properties,
         flags,
@@ -257,6 +285,9 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
         image_desc,
         host_ptr,
         errcode_ret);
+    if (result)
+        result->dispatch->clUnloadCompiler = context->dispatch->clUnloadCompiler;
+    return result;
 }
 
 #endif // CL_VERSION_3_0

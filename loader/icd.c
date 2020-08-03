@@ -234,9 +234,7 @@ void khrIcdVendorAdd(const char *libraryName)
             ((void **)&(vendor->dispatch))[j] = NULL;
         }
         //substitute the platform dispatch table with ours
-        printf("Addresses clGetPlatformInfo %p %p", platforms[i]->dispatch->clGetPlatformInfo, vendor->dispatch.clGetPlatformInfo);
-        platforms[i]->dispatch = &(vendor->dispatch);
-        printf(" %p\n", platforms[i]->dispatch->clGetPlatformInfo);
+        platforms[i]->dispatch->clUnloadCompiler = (cl_int (*)())&(vendor->dispatch);
 
 
         // add this vendor to the list of vendors at the tail

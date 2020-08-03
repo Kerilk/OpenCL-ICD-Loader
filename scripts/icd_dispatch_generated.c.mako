@@ -6,6 +6,7 @@ apiskip = {
     'clGetExtensionFunctionAddressForPlatform', # to return ICD-aware extensions
     'clCreateBufferWithProperties',             # only until OpenCL 3.0 is final
     'clCreateImageWithProperties',              # only until OpenCL 3.0 is final
+    'clGetDeviceIDs',
     }
 
 # Handles, and mappings to errors when handles are invalid:
@@ -104,17 +105,21 @@ CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name}(
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
 %endif
 %if api.Name == "clCreateContext":
-    return ${api.Params[2].Name}[0]->dispatch->${api.Name}(
+    ${api.RetType} result = ((cl_icd_dispatch *)${api.Params[2].Name}[0]->dispatch->clUnloadCompiler)->${api.Name}(
 %elif api.Name == "clWaitForEvents":
-    return ${api.Params[1].Name}[0]->dispatch->${api.Name}(
+    ${api.RetType} result = ((cl_icd_dispatch *)${api.Params[1].Name}[0]->dispatch->clUnloadCompiler)->${api.Name}(
 %elif api.Name == "clCreateContextFromType":
-    return platform->dispatch->${api.Name}(
+    ${api.RetType} result = ((cl_icd_dispatch *)platform->dispatch->clUnloadCompiler)->${api.Name}(
 %elif api.Name == "clSVMFree":
-    ${handle.Name}->dispatch->${api.Name}(
+    ((cl_icd_dispatch *)${handle.Name}->dispatch->clUnloadCompiler)->${api.Name}(
 %elif api.Name == "clUnloadCompiler":
     return CL_SUCCESS;
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+%  if api.RetType in apihandles:
+    ${api.RetType} result = ((cl_icd_dispatch *)${handle.Name}->dispatch->clUnloadCompiler)->${api.Name}(
+%  else:
+    return ((cl_icd_dispatch *)${handle.Name}->dispatch->clUnloadCompiler)->${api.Name}(
+%  endif
 %endif:
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -123,6 +128,19 @@ CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name}(
         ${param.Name});
 %  endif
 %endfor
+%if api.RetType in apihandles:
+    if (result)
+%  if api.Name == "clCreateContext":
+        result->dispatch->clUnloadCompiler = ${api.Params[2].Name}[0]->dispatch->clUnloadCompiler;
+%  elif api.Name == "clWaitForEvents":
+        result->dispatch->clUnloadCompiler = ${api.Params[1].Name}[0]->dispatch->clUnloadCompiler;
+%  elif api.Name == "clCreateContextFromType":
+        result->dispatch->clUnloadCompiler = platform->dispatch->clUnloadCompiler;
+%  else:
+        result->dispatch->clUnloadCompiler = ${handle.Name}->dispatch->clUnloadCompiler;
+%  endif
+    return result;
+%endif  
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -189,9 +207,14 @@ CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name}(
 %  endif
 %endif
 %if api.Name == "clGetGLContextInfoKHR":
-    return platform->dispatch->${api.Name}(
+    return ((cl_icd_dispatch *)platform->dispatch->clUnloadCompiler)->${api.Name}(
 %else:
-    return ${handle.Name}->dispatch->${api.Name}(
+%  if api.RetType in apihandles:
+    
+    ${api.RetType} result = ((cl_icd_dispatch *)${handle.Name}->dispatch->clUnloadCompiler)->${api.Name}(
+%  else:
+    return ((cl_icd_dispatch *)${handle.Name}->dispatch->clUnloadCompiler)->${api.Name}(
+%  endif
 %endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
@@ -200,6 +223,11 @@ CL_API_ENTRY ${api.RetType} CL_API_CALL ${api.Name}(
         ${param.Name});
 %  endif
 %endfor
+%if api.RetType in apihandles:
+    if (result)
+        result->dispatch->clUnloadCompiler = context->dispatch->clUnloadCompiler;
+    return result;
+%endif  
 }
 %endfor
 
