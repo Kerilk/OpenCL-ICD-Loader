@@ -104,7 +104,7 @@ extern "C" {
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
     cl_uint num_entries,
     cl_platform_id* platforms,
-    cl_uint* num_platforms) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_platforms)
 {
     KHRicdVendor* vendor = NULL;
     cl_uint i;
@@ -151,7 +151,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
 }
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
-    const char* function_name) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const char* function_name)
 {
     void* function_address = NULL;
     size_t function_name_length = 0;
@@ -191,7 +191,7 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
     cl_platform_id platform,
-    const char* function_name) CL_API_SUFFIX__VERSION_1_2
+    const char* function_name)
 {
     void* function_address = NULL;
 
@@ -227,7 +227,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     cl_mem_flags flags,
     size_t size,
     void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateBufferWithProperties(
@@ -246,7 +246,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
     const cl_image_format* image_format,
     const cl_image_desc* image_desc,
     void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_3_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImageWithProperties(
@@ -262,7 +262,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
 CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
     cl_context context,
     void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_3_0
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clSetContextDestructorCallback(

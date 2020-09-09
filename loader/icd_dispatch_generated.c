@@ -31,7 +31,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
     cl_platform_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetPlatformInfo(
@@ -49,7 +49,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     cl_device_type device_type,
     cl_uint num_entries,
     cl_device_id* devices,
-    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDs(
@@ -67,7 +67,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
     cl_device_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetDeviceInfo(
@@ -86,7 +86,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
     const cl_device_id* devices,
     void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
     void* user_data,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     if (num_devices == 0 || devices == NULL) {
         KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
@@ -108,7 +108,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
     cl_device_type device_type,
     void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
     void* user_data,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     cl_platform_id platform = NULL;
     khrIcdInitialize();
@@ -125,7 +125,7 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
-    cl_context context) CL_API_SUFFIX__VERSION_1_0
+    cl_context context)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clRetainContext(
@@ -135,7 +135,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseContext(
-    cl_context context) CL_API_SUFFIX__VERSION_1_0
+    cl_context context)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clReleaseContext(
@@ -149,7 +149,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
     cl_context_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clGetContextInfo(
@@ -163,7 +163,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
-    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clRetainCommandQueue(
@@ -173,7 +173,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue(
-    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clReleaseCommandQueue(
@@ -187,7 +187,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
     cl_command_queue_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clGetCommandQueueInfo(
@@ -205,7 +205,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
     cl_mem_flags flags,
     size_t size,
     void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateBuffer(
@@ -219,7 +219,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
-    cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
+    cl_mem memobj)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clRetainMemObject(
@@ -229,7 +229,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject(
-    cl_mem memobj) CL_API_SUFFIX__VERSION_1_0
+    cl_mem memobj)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clReleaseMemObject(
@@ -244,7 +244,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
     cl_mem_object_type image_type,
     cl_uint num_entries,
     cl_image_format* image_formats,
-    cl_uint* num_image_formats) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_image_formats)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clGetSupportedImageFormats(
@@ -263,7 +263,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
     cl_mem_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetMemObjectInfo(
@@ -281,7 +281,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
     cl_image_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(image, CL_INVALID_MEM_OBJECT);
     return image->dispatch->clGetImageInfo(
@@ -295,7 +295,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
-    cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
+    cl_sampler sampler)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clRetainSampler(
@@ -305,7 +305,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler(
-    cl_sampler sampler) CL_API_SUFFIX__VERSION_1_0
+    cl_sampler sampler)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clReleaseSampler(
@@ -319,7 +319,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
     cl_sampler_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
     return sampler->dispatch->clGetSamplerInfo(
@@ -337,7 +337,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
     cl_uint count,
     const char** strings,
     const size_t* lengths,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithSource(
@@ -357,7 +357,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
     const size_t* lengths,
     const unsigned char** binaries,
     cl_int* binary_status,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithBinary(
@@ -373,7 +373,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
-    cl_program program) CL_API_SUFFIX__VERSION_1_0
+    cl_program program)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clRetainProgram(
@@ -383,7 +383,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram(
-    cl_program program) CL_API_SUFFIX__VERSION_1_0
+    cl_program program)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clReleaseProgram(
@@ -398,7 +398,7 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
     const cl_device_id* device_list,
     const char* options,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_1_0
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clBuildProgram(
@@ -417,7 +417,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
     cl_program_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clGetProgramInfo(
@@ -436,7 +436,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
     cl_program_build_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clGetProgramBuildInfo(
@@ -453,7 +453,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
 CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
     cl_program program,
     const char* kernel_name,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCreateKernel(
@@ -468,7 +468,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
     cl_program program,
     cl_uint num_kernels,
     cl_kernel* kernels,
-    cl_uint* num_kernels_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_kernels_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCreateKernelsInProgram(
@@ -481,7 +481,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
-    cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
+    cl_kernel kernel)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clRetainKernel(
@@ -491,7 +491,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel(
-    cl_kernel kernel) CL_API_SUFFIX__VERSION_1_0
+    cl_kernel kernel)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clReleaseKernel(
@@ -504,7 +504,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
     cl_kernel kernel,
     cl_uint arg_index,
     size_t arg_size,
-    const void* arg_value) CL_API_SUFFIX__VERSION_1_0
+    const void* arg_value)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelArg(
@@ -521,7 +521,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
     cl_kernel_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelInfo(
@@ -540,7 +540,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
     cl_kernel_work_group_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelWorkGroupInfo(
@@ -556,7 +556,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
 
 CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
     cl_uint num_events,
-    const cl_event* event_list) CL_API_SUFFIX__VERSION_1_0
+    const cl_event* event_list)
 {
     if (num_events == 0 || event_list == NULL) {
         return CL_INVALID_VALUE;
@@ -574,7 +574,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
     cl_event_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clGetEventInfo(
@@ -588,7 +588,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
-    cl_event event) CL_API_SUFFIX__VERSION_1_0
+    cl_event event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clRetainEvent(
@@ -598,7 +598,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent(
-    cl_event event) CL_API_SUFFIX__VERSION_1_0
+    cl_event event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clReleaseEvent(
@@ -612,7 +612,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
     cl_profiling_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clGetEventProfilingInfo(
@@ -626,7 +626,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFlush(
-    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clFlush(
@@ -636,7 +636,7 @@ CL_API_ENTRY cl_int CL_API_CALL clFlush(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFinish(
-    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_1_0
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clFinish(
@@ -654,7 +654,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
     void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadBuffer(
@@ -680,7 +680,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
     const void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteBuffer(
@@ -706,7 +706,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
     size_t size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBuffer(
@@ -734,7 +734,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
     void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadImage(
@@ -764,7 +764,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
     const void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteImage(
@@ -792,7 +792,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
     const size_t* region,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyImage(
@@ -818,7 +818,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
     size_t dst_offset,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyImageToBuffer(
@@ -844,7 +844,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
     const size_t* region,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBufferToImage(
@@ -871,7 +871,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
     cl_event* event,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMapBuffer(
@@ -901,7 +901,7 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
     cl_event* event,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMapImage(
@@ -927,7 +927,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
     void* mapped_ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueUnmapMemObject(
@@ -950,7 +950,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
     const size_t* local_work_size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueNDRangeKernel(
@@ -977,7 +977,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
     const void** args_mem_loc,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueNativeKernel(
@@ -999,7 +999,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
     cl_command_queue command_queue,
     cl_command_queue_properties properties,
     cl_bool enable,
-    cl_command_queue_properties* old_properties) CL_EXT_SUFFIX__VERSION_1_0_DEPRECATED
+    cl_command_queue_properties* old_properties)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clSetCommandQueueProperty(
@@ -1019,7 +1019,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
     size_t image_height,
     size_t image_row_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage2D(
@@ -1045,7 +1045,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
     size_t image_row_pitch,
     size_t image_slice_pitch,
     void* host_ptr,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage3D(
@@ -1065,7 +1065,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
     cl_command_queue command_queue,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMarker(
@@ -1078,7 +1078,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
     cl_command_queue command_queue,
     cl_uint num_events,
-    const cl_event* event_list) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    const cl_event* event_list)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWaitForEvents(
@@ -1090,7 +1090,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
-    cl_command_queue command_queue) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueBarrier(
@@ -1100,7 +1100,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
-    void ) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    void )
 {
     // Nothing!
     return CL_SUCCESS;
@@ -1112,7 +1112,7 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_context context,
     cl_device_id device,
     cl_command_queue_properties properties,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateCommandQueue(
@@ -1129,7 +1129,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
     cl_bool normalized_coords,
     cl_addressing_mode addressing_mode,
     cl_filter_mode filter_mode,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateSampler(
@@ -1147,7 +1147,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
     cl_kernel kernel,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_EXT_SUFFIX__VERSION_1_2_DEPRECATED
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueTask(
@@ -1165,7 +1165,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
     cl_mem_flags flags,
     cl_buffer_create_type buffer_create_type,
     const void* buffer_create_info,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(buffer, CL_INVALID_MEM_OBJECT);
     return buffer->dispatch->clCreateSubBuffer(
@@ -1181,7 +1181,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
 CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
     cl_mem memobj,
     void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_1_1
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clSetMemObjectDestructorCallback(
@@ -1194,7 +1194,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
     cl_context context,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateUserEvent(
@@ -1206,7 +1206,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
 
 CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
     cl_event event,
-    cl_int execution_status) CL_API_SUFFIX__VERSION_1_1
+    cl_int execution_status)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clSetUserEventStatus(
@@ -1220,7 +1220,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
     cl_event event,
     cl_int command_exec_callback_type,
     void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_1_1
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
     return event->dispatch->clSetEventCallback(
@@ -1246,7 +1246,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
     void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_1
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReadBufferRect(
@@ -1282,7 +1282,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
     const void* ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_1
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueWriteBufferRect(
@@ -1317,7 +1317,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
     size_t dst_slice_pitch,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_1
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueCopyBufferRect(
@@ -1343,7 +1343,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
     const cl_device_partition_property* properties,
     cl_uint num_devices,
     cl_device_id* out_devices,
-    cl_uint* num_devices_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_uint* num_devices_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevices(
@@ -1357,7 +1357,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
-    cl_device_id device) CL_API_SUFFIX__VERSION_1_2
+    cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clRetainDevice(
@@ -1367,7 +1367,7 @@ CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice(
-    cl_device_id device) CL_API_SUFFIX__VERSION_1_2
+    cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDevice(
@@ -1382,7 +1382,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
     const cl_image_format* image_format,
     const cl_image_desc* image_desc,
     void* host_ptr,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateImage(
@@ -1401,7 +1401,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
     cl_uint num_devices,
     const cl_device_id* device_list,
     const char* kernel_names,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithBuiltInKernels(
@@ -1423,7 +1423,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
     const cl_program* input_headers,
     const char** header_include_names,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_API_SUFFIX__VERSION_1_2
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clCompileProgram(
@@ -1449,7 +1449,7 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
     const cl_program* input_programs,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
     void* user_data,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clLinkProgram(
@@ -1467,7 +1467,7 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
 ///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
-    cl_platform_id platform) CL_API_SUFFIX__VERSION_1_2
+    cl_platform_id platform)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clUnloadPlatformCompiler(
@@ -1482,7 +1482,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     cl_kernel_arg_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_2
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelArgInfo(
@@ -1505,7 +1505,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
     size_t size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueFillBuffer(
@@ -1530,7 +1530,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
     const size_t* region,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueFillImage(
@@ -1553,7 +1553,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
     cl_mem_migration_flags flags,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMigrateMemObjects(
@@ -1572,7 +1572,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueMarkerWithWaitList(
@@ -1588,7 +1588,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
     cl_command_queue command_queue,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueBarrierWithWaitList(
@@ -1604,7 +1604,7 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     cl_context context,
     cl_device_id device,
     const cl_queue_properties* properties,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateCommandQueueWithProperties(
@@ -1622,7 +1622,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
     cl_uint pipe_packet_size,
     cl_uint pipe_max_packets,
     const cl_pipe_properties* properties,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreatePipe(
@@ -1641,7 +1641,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
     cl_pipe_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(pipe, CL_INVALID_MEM_OBJECT);
     return pipe->dispatch->clGetPipeInfo(
@@ -1658,7 +1658,7 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
     cl_context context,
     cl_svm_mem_flags flags,
     size_t size,
-    cl_uint alignment) CL_API_SUFFIX__VERSION_2_0
+    cl_uint alignment)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, NULL);
     return context->dispatch->clSVMAlloc(
@@ -1672,7 +1672,7 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
 
 CL_API_ENTRY void CL_API_CALL clSVMFree(
     cl_context context,
-    void* svm_pointer) CL_API_SUFFIX__VERSION_2_0
+    void* svm_pointer)
 {
     if (context == NULL) return;
     context->dispatch->clSVMFree(
@@ -1685,7 +1685,7 @@ CL_API_ENTRY void CL_API_CALL clSVMFree(
 CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
     cl_context context,
     const cl_sampler_properties* sampler_properties,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateSamplerWithProperties(
@@ -1699,7 +1699,7 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
 CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
     cl_kernel kernel,
     cl_uint arg_index,
-    const void* arg_value) CL_API_SUFFIX__VERSION_2_0
+    const void* arg_value)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelArgSVMPointer(
@@ -1714,7 +1714,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
     cl_kernel kernel,
     cl_kernel_exec_info param_name,
     size_t param_value_size,
-    const void* param_value) CL_API_SUFFIX__VERSION_2_0
+    const void* param_value)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clSetKernelExecInfo(
@@ -1734,7 +1734,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
     void* user_data,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMFree(
@@ -1758,7 +1758,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
     size_t size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMemcpy(
@@ -1782,7 +1782,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
     size_t size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMemFill(
@@ -1806,7 +1806,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
     size_t size,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMap(
@@ -1827,7 +1827,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
     void* svm_ptr,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMUnmap(
@@ -1843,7 +1843,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
 CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
     cl_context context,
     cl_device_id device,
-    cl_command_queue command_queue) CL_API_SUFFIX__VERSION_2_1
+    cl_command_queue command_queue)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
     return context->dispatch->clSetDefaultDeviceCommandQueue(
@@ -1857,7 +1857,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
     cl_device_id device,
     cl_ulong* device_timestamp,
-    cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
+    cl_ulong* host_timestamp)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetDeviceAndHostTimer(
@@ -1870,7 +1870,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
 
 CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
     cl_device_id device,
-    cl_ulong* host_timestamp) CL_API_SUFFIX__VERSION_2_1
+    cl_ulong* host_timestamp)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clGetHostTimer(
@@ -1884,7 +1884,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
     cl_context context,
     const void* il,
     size_t length,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateProgramWithIL(
@@ -1898,7 +1898,7 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
 
 CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
     cl_kernel source_kernel,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_2_1
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(source_kernel, CL_INVALID_KERNEL);
     return source_kernel->dispatch->clCloneKernel(
@@ -1916,7 +1916,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
     const void* input_value,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_2_1
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
     return kernel->dispatch->clGetKernelSubGroupInfo(
@@ -1940,7 +1940,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
     cl_mem_migration_flags flags,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_2_1
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueSVMMigrateMem(
@@ -1960,7 +1960,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
     cl_program program,
     cl_uint spec_id,
     size_t spec_size,
-    const void* spec_value) CL_API_SUFFIX__VERSION_2_2
+    const void* spec_value)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clSetProgramSpecializationConstant(
@@ -1975,7 +1975,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
     cl_program program,
     void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
-    void* user_data) CL_EXT_SUFFIX__VERSION_2_2_DEPRECATED
+    void* user_data)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
     return program->dispatch->clSetProgramReleaseCallback(
@@ -1989,7 +1989,7 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
 // cl_ext_device_fission
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clReleaseDeviceEXT(
@@ -1997,7 +1997,7 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
 }
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
-    cl_device_id device) CL_EXT_SUFFIX__VERSION_1_1
+    cl_device_id device)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
     return device->dispatch->clRetainDeviceEXT(
@@ -2009,7 +2009,7 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     const cl_device_partition_property_ext* properties,
     cl_uint num_entries,
     cl_device_id* out_devices,
-    cl_uint* num_devices) CL_EXT_SUFFIX__VERSION_1_1
+    cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
     return in_device->dispatch->clCreateSubDevicesEXT(
@@ -2033,7 +2033,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
     cl_d3d10_device_set_khr d3d_device_set,
     cl_uint num_entries,
     cl_device_id* devices,
-    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_0
+    cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromD3D10KHR(
@@ -2050,7 +2050,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     cl_context context,
     cl_mem_flags flags,
     ID3D10Buffer* resource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10BufferKHR(
@@ -2065,7 +2065,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     cl_mem_flags flags,
     ID3D10Texture2D* resource,
     UINT subresource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10Texture2DKHR(
@@ -2081,7 +2081,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     cl_mem_flags flags,
     ID3D10Texture3D* resource,
     UINT subresource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D10Texture3DKHR(
@@ -2098,7 +2098,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireD3D10ObjectsKHR(
@@ -2116,7 +2116,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseD3D10ObjectsKHR(
@@ -2143,7 +2143,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
     cl_d3d11_device_set_khr d3d_device_set,
     cl_uint num_entries,
     cl_device_id* devices,
-    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_2
+    cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromD3D11KHR(
@@ -2160,7 +2160,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     cl_context context,
     cl_mem_flags flags,
     ID3D11Buffer* resource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11BufferKHR(
@@ -2175,7 +2175,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     cl_mem_flags flags,
     ID3D11Texture2D* resource,
     UINT subresource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11Texture2DKHR(
@@ -2191,7 +2191,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     cl_mem_flags flags,
     ID3D11Texture3D* resource,
     UINT subresource,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromD3D11Texture3DKHR(
@@ -2208,7 +2208,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireD3D11ObjectsKHR(
@@ -2226,7 +2226,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseD3D11ObjectsKHR(
@@ -2254,7 +2254,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
     cl_dx9_media_adapter_set_khr media_adapter_set,
     cl_uint num_entries,
     cl_device_id* devices,
-    cl_uint* num_devices) CL_API_SUFFIX__VERSION_1_2
+    cl_uint* num_devices)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     return platform->dispatch->clGetDeviceIDsFromDX9MediaAdapterKHR(
@@ -2274,7 +2274,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_dx9_media_adapter_type_khr adapter_type,
     void* surface_info,
     cl_uint plane,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromDX9MediaSurfaceKHR(
@@ -2292,7 +2292,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireDX9MediaSurfacesKHR(
@@ -2310,7 +2310,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_2
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseDX9MediaSurfacesKHR(
@@ -2332,7 +2332,7 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
     cl_context context,
     CLeglSyncKHR sync,
     CLeglDisplayKHR display,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateEventFromEGLSyncKHR(
@@ -2352,7 +2352,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
     CLeglImageKHR eglimage,
     cl_mem_flags flags,
     const cl_egl_image_properties_khr* properties,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromEGLImageKHR(
@@ -2370,7 +2370,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireEGLObjectsKHR(
@@ -2388,7 +2388,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseEGLObjectsKHR(
@@ -2407,7 +2407,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
 CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
     cl_context context,
     cl_GLsync sync,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateEventFromGLsyncKHR(
@@ -2425,7 +2425,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
     cl_gl_context_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     cl_platform_id platform = NULL;
     khrIcdInitialize();
@@ -2443,7 +2443,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint bufobj,
-    int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLBuffer(
@@ -2459,7 +2459,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_2
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture(
@@ -2477,7 +2477,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture2D(
@@ -2495,7 +2495,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_GLenum target,
     cl_GLint miplevel,
     cl_GLuint texture,
-    cl_int* errcode_ret) CL_EXT_SUFFIX__VERSION_1_1_DEPRECATED
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLTexture3D(
@@ -2511,7 +2511,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context context,
     cl_mem_flags flags,
     cl_GLuint renderbuffer,
-    cl_int* errcode_ret) CL_API_SUFFIX__VERSION_1_0
+    cl_int* errcode_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
     return context->dispatch->clCreateFromGLRenderbuffer(
@@ -2524,7 +2524,7 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
 CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_mem memobj,
     cl_gl_object_type* gl_object_type,
-    cl_GLuint* gl_object_name) CL_API_SUFFIX__VERSION_1_0
+    cl_GLuint* gl_object_name)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetGLObjectInfo(
@@ -2538,7 +2538,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     cl_gl_texture_info param_name,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_API_SUFFIX__VERSION_1_0
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
     return memobj->dispatch->clGetGLTextureInfo(
@@ -2555,7 +2555,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueAcquireGLObjects(
@@ -2573,7 +2573,7 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     const cl_mem* mem_objects,
     cl_uint num_events_in_wait_list,
     const cl_event* event_wait_list,
-    cl_event* event) CL_API_SUFFIX__VERSION_1_0
+    cl_event* event)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
     return command_queue->dispatch->clEnqueueReleaseGLObjects(
@@ -2597,7 +2597,7 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
     const void* input_value,
     size_t param_value_size,
     void* param_value,
-    size_t* param_value_size_ret) CL_EXT_SUFFIX__VERSION_2_0_DEPRECATED
+    size_t* param_value_size_ret)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
     return in_kernel->dispatch->clGetKernelSubGroupInfoKHR(
