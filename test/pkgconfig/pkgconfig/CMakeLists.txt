@@ -5,7 +5,21 @@ project(PkgConfigTest
   LANGUAGES C
 )
 
-pkg_check_modules(OPENCL REQUIRED OpenCL)
+pkg_check_modules(OPENCL REQUIRED OpenCL OpenCL-Headers)
+
+# NOTE: Only CMake 3.12 introduces <XPREFIX>_LINK_LIBRARIES, which holds
+#       the full path to the libraries. Previous versions require setting
+#       -L or /L flags to find them. The folder without the flag is stored
+#       in <XPREFIX>_LIBRARY_DIRS, but setting that on a per-target basis
+#       (without setting linker flags manually) can only be done using
+#       target_link_directories from 3.13, at which point we might as well
+#       use <XPREFIX>_LINK_LIBRARIES.
+#
+#       Supporting CMake versions older than 3.12 and polluting directory-wide
+#       linker search settings is perhaps best done using a genexpr.
+if(CMAKE_VERSION VERSION_LESS 3.12)
+  link_directories("${OPENCL_LIBRARY_DIRS}")
+endif()
 
 add_executable(${PROJECT_NAME}
   ../pkgconfig.c
@@ -13,17 +27,13 @@ add_executable(${PROJECT_NAME}
 
 target_include_directories(${PROJECT_NAME}
   PRIVATE
-    ${OPENCL_INCLUDE_DIRS}
+    "${OPENCL_INCLUDE_DIRS}"
 )
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-    ${OPENCL_LINK_LIBRARIES}
-)
-
-target_compile_options(${PROJECT_NAME}
-  PRIVATE
-    ${OPENCL_CFLAGS_OTHER}
+    $<$<VERSION_LESS:${CMAKE_VERSION},3.12>:"${OPENCL_LIBRARIES}">
+    $<$<NOT:$<VERSION_LESS:${CMAKE_VERSION},3.12>>:"${OPENCL_LINK_LIBRARIES}">
 )
 
 target_compile_definitions(${PROJECT_NAME}
