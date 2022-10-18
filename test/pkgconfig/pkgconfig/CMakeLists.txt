@@ -5,7 +5,7 @@ project(PkgConfigTest
   LANGUAGES C
 )
 
-pkg_check_modules(OPENCL REQUIRED OpenCL OpenCL-Headers)
+pkg_check_modules(OPENCL REQUIRED OpenCL)
 
 # NOTE: Only CMake 3.12 introduces <XPREFIX>_LINK_LIBRARIES, which holds
 #       the full path to the libraries. Previous versions require setting
