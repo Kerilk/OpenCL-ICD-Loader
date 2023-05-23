@@ -2541,6 +2541,7 @@ return tdispatch->clGetKernelSubGroupInfoKHR(
 ///////////////////////////////////////////////////////////////////////////////
 
 void _init_dispatch(void) {
+  /* OpenCL 1.0 */
     dispatch.clGetPlatformIDs = &clGetPlatformIDs_wrap;
     dispatch.clGetPlatformInfo = &clGetPlatformInfo_wrap;
     dispatch.clGetDeviceIDs = &clGetDeviceIDs_wrap;
@@ -2743,4 +2744,5 @@ void _init_dispatch(void) {
     dispatch.clCreateBufferWithProperties = &clCreateBufferWithProperties_wrap;
     dispatch.clCreateImageWithProperties = &clCreateImageWithProperties_wrap;
     dispatch.clSetContextDestructorCallback = &clSetContextDestructorCallback_wrap;
+
 }

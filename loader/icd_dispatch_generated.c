@@ -6825,6 +6825,7 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
 
 #if defined(CL_ENABLE_LAYERS)
 struct _cl_icd_dispatch khrMasterDispatch = {
+  /* OpenCL 1.0 */
     &clGetPlatformIDs_disp,
     &clGetPlatformInfo_disp,
     &clGetDeviceIDs_disp,
@@ -7026,7 +7027,8 @@ struct _cl_icd_dispatch khrMasterDispatch = {
   /* OpenCL 3.0 */
     &clCreateBufferWithProperties_disp,
     &clCreateImageWithProperties_disp,
-    &clSetContextDestructorCallback_disp
+    &clSetContextDestructorCallback_disp,
+
 };
 #endif // defined(CL_ENABLE_LAYERS)
 #ifdef __cplusplus

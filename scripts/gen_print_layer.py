@@ -23,6 +23,7 @@ if __name__ == "__main__":
     spec = gen.load_spec(args)
     apisigs = gen.get_apisigs(spec)
     (coreapis, extapis) = gen.get_apis(spec, apisigs)
+    dispdesc = gen.get_dispatch_table_desc()
 
     try:
         # Create the layer cpp file from the API dictionary:
@@ -33,7 +34,8 @@ if __name__ == "__main__":
               spec=spec,
               apisigs=apisigs,
               coreapis=coreapis,
-              extapis=extapis).
+              extapis=extapis,
+              dispdesc=dispdesc).
           encode('utf-8', 'replace'))
     except:
         traceback = RichTraceback()
