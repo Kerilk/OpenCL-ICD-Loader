@@ -1,0 +1,4 @@
+EXPORTS
+clGetInstanceLayerInfo
+clInitInstanceLayer
+clDeinitInstanceLayer

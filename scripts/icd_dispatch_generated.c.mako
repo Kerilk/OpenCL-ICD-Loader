@@ -7,6 +7,13 @@ apiskip = {
     'clGetExtensionFunctionAddressForPlatform', # to return ICD-aware extensions
     }
 
+# APIs that do not receive a dispatchable handle
+apinodispatch = {
+    'clGetPlatformIDs',
+    'clUnloadCompiler',
+    'clGetExtensionFunctionAddress',
+}
+
 apiinit = {
     'clCreateContextFromType',
     'clGetGLContextInfoKHR',
@@ -25,6 +32,7 @@ apihandles = {
     }
 
 table_template = Template(filename='dispatch_table.mako')
+instance_table_template = Template(filename='instance_dispatch_table.mako')
 %>/*
  * Copyright (c) 2012-2026 The Khronos Group Inc.
  *
@@ -61,12 +69,25 @@ extern "C" {
           invalid = apihandles[handle.Type]
       else:
           invalid = 'NULL'
+      # Functions to generate:
+      # 0: main entry point
+      # 1: global layers dispatch stub
+      # 2: instance layer dipatch stud
+      if api.Name in apinodispatch:
+          func_types = [0, 1]
+      else:
+          func_types = [0, 1, 2]
 %>
-%for disp in [0, 1]:
+%for disp in func_types:
 %  if disp == 1:
 #if defined(CL_ENABLE_LAYERS)
+%  elif disp == 2:
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 %  endif
-${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
+${("CL_API_ENTRY", "static", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp", "_inst")[disp]}(
+%if disp == 2:
+    const cl_icd_instance_layer *layer,
+%endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
@@ -75,11 +96,73 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %  endif
 %endfor
 {
+%if disp == 2:
+    (void)layer;
+%endif
 %if api.Name in apiinit:
     khrIcdInitialize();
 %endif
+## clCreateContext is a special case, since it calls through
+## the dispatch table via the first "device":
+%if api.Name == "clCreateContext":
+    cl_device_id device = NULL;
+    if (${api.Params[1].Name} != 0 && ${api.Params[2].Name}) {
+        device = ${api.Params[2].Name}[0];
+    }
+## clCreateContextFromType is a special case, since it calls
+## through a platform passed via properties:
+%elif api.Name == "clCreateContextFromType":
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
+## clWaitForEvents is a special case, since it calls through
+## the dispatch table via the first "event":
+%elif api.Name == "clWaitForEvents":
+    cl_event event = NULL;
+    if (${api.Params[0].Name} != 0 && ${api.Params[1].Name}) {
+        event = ${api.Params[1].Name}[0];
+    }
+%endif
 %if disp == 0:
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+%if not api.Name in apinodispatch:
+%  if api.Name == "clCreateContext":
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clCreateContext)->clCreateContext(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clCreateContext),
+%   elif api.Name == "clCreateContextFromType":
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clCreateContextFromType)->clCreateContextFromType(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clCreateContextFromType),
+%  elif api.Name == "clWaitForEvents":
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clWaitForEvents)->clWaitForEvents(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clWaitForEvents),
+%  elif api.Name == "clSVMFree":
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(${handle.Name}))
+    {
+        KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(${handle.Name}, clSVMFree)->clSVMFree(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(${handle.Name}, clSVMFree),
+%  else:
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(${handle.Name}))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(${handle.Name}, ${api.Name})->${api.Name}(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(${handle.Name}, ${api.Name}),
+%  endif
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+            ${param.Name},
+%  else:
+            ${param.Name});
+%  endif
+%endfor
+%  if api.Name == "clSVMFree":
+    }
+    else
+%  endif
+%endif
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+%endif
+%if disp == 0 or disp == 2:
     if (khrFirstLayer)
 %  if api.Name == "clSVMFree":
     {
@@ -98,7 +181,9 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     }
     else
 %  endif
+%if disp == 0:
 #endif // defined(CL_ENABLE_LAYERS)
+%endif
 %endif
 %if api.RetType in apihandles or api.RetType == "void*":
 ## clCreateContext is a special case, since it calls through
@@ -107,12 +192,10 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
     if (${api.Params[1].Name} == 0 || ${api.Params[2].Name} == NULL) {
         KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(${api.Params[2].Name}[0], CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(device, CL_INVALID_DEVICE);
 ## clCreateContextFromType is a special case, since it calls
 ## through a platform passed via properties:
 %  elif api.Name == "clCreateContextFromType":
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
 ## These APIs are special cases because they return a void*, but
 ## do not nave an errcode_ret:
@@ -128,18 +211,18 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 ## the dispatch table via the first "event":
 %elif api.Name == "clWaitForEvents":
     if (${api.Params[0].Name} == 0 || ${api.Params[1].Name} == NULL) {
-        return CL_INVALID_VALUE;
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_VALUE);
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${api.Params[1].Name}[0], CL_INVALID_EVENT);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
 %elif api.Name == "clUnloadCompiler":
     // Nothing!
 %else:
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(${handle.Name}, ${invalid});
 %endif
 %if api.Name == "clCreateContext":
-    return KHR_ICD2_DISPATCH(${api.Params[2].Name}[0])->${api.Name}(
+    return KHR_ICD2_DISPATCH(device)->${api.Name}(
 %elif api.Name == "clWaitForEvents":
-    return KHR_ICD2_DISPATCH(${api.Params[1].Name}[0])->${api.Name}(
+    return KHR_ICD2_DISPATCH(event)->${api.Name}(
 %elif api.Name == "clCreateContextFromType":
     return KHR_ICD2_DISPATCH(platform)->${api.Name}(
 %elif api.Name == "clSVMFree":
@@ -159,6 +242,8 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 }
 %  if disp == 1:
 #endif // defined(CL_ENABLE_LAYERS)
+%  elif disp == 2:
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 %  endif
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -174,6 +259,21 @@ extern ${api.RetType} CL_API_CALL ${api.Name + "_disp"}(
 %  endif
 %endfor
 #endif // defined(CL_ENABLE_LAYERS)
+%if not api.Name in apinodispatch:
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+extern ${api.RetType} CL_API_CALL ${api.Name + "_inst"}(
+    const cl_icd_instance_layer *layer,
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+    ${param.Type} ${param.Name}${param.TypeEnd},
+%  else:
+    ${param.Type} ${param.Name}${param.TypeEnd}) ${api.Suffix};
+%  endif
+%endfor
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+%endif
 %endif
 %endfor
 %endfor
@@ -211,11 +311,16 @@ win32extensions = {
       else:
           invalid = 'NULL'
 %>
-%for disp in [0, 1]:
+%for disp in [0, 1, 2]:
 %  if disp == 1:
 #if defined(CL_ENABLE_LAYERS)
+%  elif disp == 2:
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 %  endif
-${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp")[disp]}(
+${("CL_API_ENTRY", "static", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("", "_disp", "_inst")[disp]}(
+%if disp == 2:
+    const cl_icd_instance_layer *layer,
+%endif
 %for i, param in enumerate(api.Params):
 %  if i < len(api.Params)-1:
     ${param.Type} ${param.Name}${param.TypeEnd},
@@ -224,8 +329,35 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %  endif
 %endfor
 {
+%if disp == 2:
+    (void)layer;
+%endif
+%if api.Name == "clGetGLContextInfoKHR":
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
+%endif
 %if disp == 0:
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+%  if api.Name == "clGetGLContextInfoKHR":
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetGLContextInfoKHR)->clGetGLContextInfoKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetGLContextInfoKHR),
+%  else:
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(${handle.Name}))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(${handle.Name}, ${api.Name})->${api.Name}(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(${handle.Name}, ${api.Name}),
+%  endif
+%for i, param in enumerate(api.Params):
+%  if i < len(api.Params)-1:
+            ${param.Name},
+%  else:
+            ${param.Name});
+%  endif
+%endfor
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+%endif
+%if disp == 0 or disp == 2:
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.${api.Name}(
 %for i, param in enumerate(api.Params):
@@ -235,7 +367,9 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
             ${param.Name});
 %  endif
 %endfor
+%if disp == 0:
 #endif // defined(CL_ENABLE_LAYERS)
+%endif
 %endif
 %if api.RetType in apihandles or api.RetType == "void*":
 %  if False:
@@ -246,8 +380,6 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 %  endif
 %else:
 %  if api.Name == "clGetGLContextInfoKHR":
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->${api.Name});
 %  else:
@@ -270,6 +402,8 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 }
 %  if disp == 1:
 #endif // defined(CL_ENABLE_LAYERS)
+%  elif disp == 2:
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 %  endif
 %endfor
 %endfor
@@ -284,6 +418,16 @@ ${("CL_API_ENTRY", "static")[disp]} ${api.RetType} CL_API_CALL ${api.Name + ("",
 #if defined(CL_ENABLE_LAYERS)
 const struct _cl_icd_dispatch khrMainDispatch = ${table_template.render(suffix = 'disp')};
 #endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+extern clGetPlatformIDsForInstanceKHR_instance_t clGetPlatformIDsForInstanceKHR_inst;
+
+struct KHRInstanceLayerItem khrInstanceLayerTerminator = {
+  { &khrInstanceLayerTerminator.dispatch, NULL, NULL},
+  ${instance_table_template.render(suffix = 'inst', type = False, type_name = None, guards = False)},
+  ${instance_table_template.render(value = 'khrInstanceLayerTerminator.layer', type = False, guards = False)},
+  NULL, NULL};
+#endif
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 ///////////////////////////////////////////////////////////////////////////////

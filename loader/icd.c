@@ -29,6 +29,9 @@ static int khrForceLegacyTermination = 0;
 
 #if defined(CL_ENABLE_LAYERS)
 struct KHRLayer *khrFirstLayer = NULL;
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+struct KHRInstanceLayer *khrFirstInstanceLayer = NULL;
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 
 static inline int khrIcdCheckEnvTrue(const char *variable)
@@ -521,6 +524,154 @@ Done:
         free(layer);
     }
 }
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+void khrIcdInstanceLayerAdd(const char *libraryName)
+{
+    void *library = NULL;
+    cl_int result = CL_SUCCESS;
+    clGetInstanceLayerInfo_fn p_clGetInstanceLayerInfo = NULL;
+    clInitInstanceLayer_fn p_clInitInstanceLayer = NULL;
+    clDeinitInstanceLayer_fn p_clDeinitInstanceLayer = NULL;
+    struct KHRInstanceLayer *layerIterator = NULL;
+    struct KHRInstanceLayer *layer = NULL;
+    cl_instance_layer_api_version api_version = 0;
+    char *name = NULL;
+
+    // require that the library name be valid
+    if (!libraryName)
+    {
+        goto Done;
+    }
+    KHR_ICD_TRACE("attempting to add instance layer %s...\n", libraryName);
+
+    // load its library and query its function pointers
+    library = khrIcdOsLibraryLoad(libraryName);
+    if (!library)
+    {
+        KHR_ICD_TRACE("failed to load library %s\n", libraryName);
+        goto Done;
+    }
+
+    // ensure that we haven't already loaded this layer
+    for (layerIterator = khrFirstInstanceLayer; layerIterator; layerIterator = layerIterator->next)
+    {
+        if (layerIterator->library == library)
+        {
+            KHR_ICD_TRACE("already loaded instance layer %s, nothing to do here\n", libraryName);
+            goto Done;
+        }
+    }
+
+    // get the library's clGetInstanceLayerInfo pointer
+    p_clGetInstanceLayerInfo = (clGetInstanceLayerInfo_fn)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clGetInstanceLayerInfo");
+    if (!p_clGetInstanceLayerInfo)
+    {
+        KHR_ICD_TRACE("failed to get function address clGetInstanceLayerInfo\n");
+        goto Done;
+    }
+
+    // use that function to get the clInitInstanceLayer function pointer
+    p_clInitInstanceLayer = (clInitInstanceLayer_fn)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitInstanceLayer");
+    if (!p_clInitInstanceLayer)
+    {
+        KHR_ICD_TRACE("failed to get function address clInitInstanceLayer\n");
+        goto Done;
+    }
+
+    p_clDeinitInstanceLayer = (clDeinitInstanceLayer_fn)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clDeinitInstanceLayer");
+    if (!p_clDeinitInstanceLayer)
+    {
+        KHR_ICD_TRACE("failed to get function address clDeinitInstanceLayer\n");
+        goto Done;
+    }
+
+    result = p_clGetInstanceLayerInfo(CL_INSTANCE_LAYER_API_VERSION, sizeof(api_version), &api_version, NULL);
+    if (CL_SUCCESS != result)
+    {
+        KHR_ICD_TRACE("failed to query instance layer version\n");
+        goto Done;
+    }
+
+    if (CL_INSTANCE_LAYER_API_VERSION_100 != api_version)
+    {
+        KHR_ICD_TRACE("unsupported api version\n");
+        goto Done;
+    }
+
+    {
+        size_t sz_name;
+        result = p_clGetInstanceLayerInfo(CL_INSTANCE_LAYER_NAME, 0, NULL, &sz_name);
+        if (CL_SUCCESS != result)
+        {
+            KHR_ICD_TRACE("failed to query instance layer name\n");
+            goto Done;
+        }
+        name = (char *)malloc(sz_name);
+        if (!name)
+        {
+            KHR_ICD_TRACE("failed to allocate memory\n");
+            goto Done;
+        }
+        result = p_clGetInstanceLayerInfo(CL_INSTANCE_LAYER_NAME, sz_name, name, NULL);
+        if (CL_SUCCESS != result)
+        {
+            KHR_ICD_TRACE("failed to query instance layer name\n");
+            goto Done;
+        }
+    }
+
+    layer = (struct KHRInstanceLayer*)calloc(sizeof(struct KHRInstanceLayer), 1);
+    if (!layer)
+    {
+        KHR_ICD_TRACE("failed to allocate memory\n");
+        goto Done;
+    }
+#ifdef CL_LAYER_INFO
+    {
+        // Not using strdup as it is not standard c
+        size_t sz_name = strlen(libraryName) + 1;
+        layer->libraryName = malloc(sz_name);
+        if (!layer->libraryName)
+        {
+            KHR_ICD_TRACE("failed to allocate memory\n");
+            goto Done;
+        }
+        memcpy(layer->libraryName, libraryName, sz_name);
+        layer->p_clGetInstanceLayerInfo = p_clGetInstanceLayerInfo;
+    }
+#endif
+    layer->p_clInitInstanceLayer = p_clInitInstanceLayer;
+    layer->p_clDeinitInstanceLayer = p_clDeinitInstanceLayer;
+    layer->name = name;
+
+    layer->next = khrFirstInstanceLayer;
+    khrFirstInstanceLayer = layer;
+    layer->library = library;
+
+    KHR_ICD_TRACE("successfully added instance layer %s\n", libraryName);
+    return;
+Done:
+    if (library)
+    {
+        khrIcdOsLibraryUnload(library);
+    }
+    if (name)
+    {
+        free(name);
+    }
+    if (layer)
+    {
+#ifdef CL_LAYER_INFO
+        if (layer->libraryName)
+        {
+            free(layer->libraryName);
+        }
+#endif
+        free(layer);
+    }
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 
 // Get next file or dirname given a string list or registry key path.
@@ -584,6 +735,29 @@ void khrIcdLayersEnumerateEnv(void)
         khrIcd_free_getenv(layerFilenames);
     }
 }
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+void khrIcdInstanceLayersEnumerateEnv(void)
+{
+    char* layerFilenames = khrIcd_secure_getenv("OPENCL_INSTANCE_LAYERS");
+    char* cur_file = NULL;
+    char* next_file = NULL;
+    if (layerFilenames)
+    {
+        KHR_ICD_TRACE("Found OPENCL_INSTANCE_LAYERS environment variable.\n");
+
+        next_file = layerFilenames;
+        while (NULL != next_file && *next_file != '\0') {
+            cur_file = next_file;
+            next_file = loader_get_next_path(cur_file);
+
+            khrIcdInstanceLayerAdd(cur_file);
+        }
+
+        khrIcd_free_getenv(layerFilenames);
+    }
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 
 void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties, cl_platform_id *outPlatform)
@@ -649,6 +823,22 @@ void khrIcdDeinitialize(void) {
         head = cur->next;
         free(cur);
     }
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    KHR_ICD_TRACE("Unloading instance layers\n");
+    while(khrFirstInstanceLayer) {
+        struct KHRInstanceLayer *cur = khrFirstInstanceLayer;
+#ifdef CL_LAYER_INFO
+        free(cur->libraryName);
+#endif
+        free(cur->name);
+        if (!khrDisableLibraryUnloading)
+            khrIcdOsLibraryUnload(cur->library);
+        khrFirstInstanceLayer = cur->next;
+        free(cur);
+    }
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    
 #endif // defined(CL_ENABLE_LAYERS)
 
     // free vendor in reverse order of their creation (back to front)

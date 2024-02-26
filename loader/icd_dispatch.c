@@ -66,6 +66,60 @@ clGetICDLoaderInfoOCLICD(
 }
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+#if defined(CL_ENABLE_LAYERS)
+static int
+addInstanceLayer(cl_instance_khr instance, const char *name) {
+    if (!instance)
+        return CL_INVALID_VALUE;
+    if (!name)
+        return CL_INVALID_VALUE;
+
+    struct KHRInstanceLayer *instanceLayer = khrFirstInstanceLayer;
+    while (instanceLayer) {
+        if (!strcmp(name, instanceLayer->name))
+            break;
+        instanceLayer = instanceLayer->next;
+    }
+    if (!instanceLayer)
+        return CL_INVALID_INSTANCE_LAYER_KHR;
+
+    cl_uint num_entries = sizeof(instance->layerDispatch)/sizeof(instance->layerDispatch.clGetPlatformIDsForInstanceKHR);
+    cl_icd_instance_layer layer = { NULL, &instance->layerDispatch, NULL };
+    cl_uint num_entries_ret = 0;
+    const cl_icd_instance_dispatch *layer_dispatch_ret;
+    void *data_ret = NULL;
+
+    int ret = instanceLayer->p_clInitInstanceLayer(
+        num_entries, &layer, &num_entries_ret, &layer_dispatch_ret, &data_ret);
+    if (ret != CL_SUCCESS)
+        return CL_INVALID_INSTANCE_LAYER_KHR;
+
+    struct KHRInstanceLayerItem *layerItem =
+        (struct KHRInstanceLayerItem *)malloc(sizeof(struct KHRInstanceLayerItem));
+    if (!layerItem)
+        return CL_OUT_OF_HOST_MEMORY;
+    memset(layerItem, 0, sizeof(struct KHRInstanceLayerItem));
+
+    layerItem->layer.dispatch = &layerItem->dispatch;
+    layerItem->layer.layer_dispatch = &layerItem->layerDispatch;
+    layerItem->layer.data = data_ret;
+    layerItem->layerDispatch = instance->layerDispatch;
+    cl_uint limit = num_entries_ret < num_entries ? num_entries_ret : num_entries;
+
+    for (cl_uint i = 0; i < limit; i++) {
+        if (((void **)layer_dispatch_ret)[i]) {
+            ((void **)&(layerItem->dispatch))[i] = ((void **)layer_dispatch_ret)[i];
+            ((cl_icd_instance_layer **)&(instance->layerDispatch))[i] = &layerItem->layer;
+        }
+    }
+    layerItem->next = instance->firstLayer;
+    instance->firstLayer = layerItem;
+    if (!layerItem->next->next)
+        for (cl_uint i = 0; i < instance->num_platforms; i++)
+            (instance->dispDatas + i)->layerDispatch = &instance->layerDispatch;
+    return CL_SUCCESS;
+}
+#endif // defined(CL_ENABLE_LAYERS)
 
 static clCreateInstanceKHR_t clCreateInstanceKHR;
 cl_instance_khr CL_API_CALL
@@ -106,6 +160,10 @@ clCreateInstanceKHR(
     KHR_ICD_ALLOC_AND_ZERO(instance->platforms, num_platforms, cl_platform_id);
     KHR_ICD_ALLOC_AND_ZERO(instance->vendors, num_platforms, KHRicdVendor *);
     KHR_ICD_ALLOC_AND_ZERO(instance->dispDatas, num_platforms, struct KHRDisp);
+#if defined(CL_ENABLE_LAYERS)
+    instance->firstLayer = &khrInstanceLayerTerminator;
+    instance->layerDispatch = khrInstanceLayerTerminator.layerDispatch;
+#endif // defined(CL_ENABLE_LAYERS)
 
     num_platforms = 0;
     for (KHRicdVendor* vendor = khrIcdVendors; vendor; vendor = vendor->next)
@@ -132,12 +190,47 @@ clCreateInstanceKHR(
 
     instance->num_platforms = num_platforms;
 
+    if (properties) {
+        const cl_instance_properties_khr *property = properties;
+        while (*property != CL_INSTANCE_PROPERTIES_LIST_END_KHR) {
+           switch (*property) {
+           case CL_INSTANCE_PROPERTIES_LAYERS_KHR:
+               property++;
+               while (*property != CL_INSTANCE_PROPERTIES_LAYERS_LIST_END_KHR) {
+#if defined(CL_ENABLE_LAYERS)
+                   err = addInstanceLayer(instance, (const char*)(intptr_t)*property);
+                   if (CL_SUCCESS != err)
+                       goto error;
+#endif // defined(CL_ENABLE_LAYERS)
+                   property++;
+               }
+               property++;
+               break;
+           default:
+               err = CL_INVALID_VALUE;
+               goto error;
+           }
+        }
+    }
+
     if (errcode_ret)
         *errcode_ret = CL_SUCCESS;
     return instance;
 error:
     if (instance)
     {
+#if defined(CL_ENABLE_LAYERS)
+        while (instance->firstLayer && instance->firstLayer->instanceLayer)
+        {
+            struct KHRInstanceLayerItem *layerItem = instance->firstLayer;
+            instance->firstLayer = instance->firstLayer->next;
+            layerItem->instanceLayer->p_clDeinitInstanceLayer(
+                &layerItem->layer, layerItem->layer.data);
+            free(layerItem);
+        }
+#endif // defined(CL_ENABLE_LAYERS)
+        for (cl_uint i = 0; i < instance->num_platforms; i++)
+            instance->vendors[i]->clIcdDestroyInstancePlatform(instance->platforms[instance->num_platforms - 1 - i]);
         free(instance->dispDatas);
         free(instance->vendors);
         free(instance->platforms);
@@ -155,6 +248,15 @@ clDestroyInstanceKHR(
     cl_instance_khr instance)
 {
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(instance, CL_INVALID_INSTANCE_KHR);
+#if defined(CL_ENABLE_LAYERS)
+    while (instance->firstLayer->instanceLayer) {
+        struct KHRInstanceLayerItem *layerItem = instance->firstLayer;
+        instance->firstLayer = instance->firstLayer->next;
+        layerItem->instanceLayer->p_clDeinitInstanceLayer(
+            &layerItem->layer, layerItem->layer.data);
+        free(layerItem);
+    }
+#endif // defined(CL_ENABLE_LAYERS)
     for (cl_uint i = 0; i < instance->num_platforms; i++)
         instance->vendors[i]->clIcdDestroyInstancePlatform(instance->platforms[i]);
     free(instance->dispDatas);
@@ -164,9 +266,8 @@ clDestroyInstanceKHR(
     return CL_SUCCESS;
 }
 
-static clGetPlatformIDsForInstanceKHR_t clGetPlatformIDsForInstanceKHR;
-cl_int CL_API_CALL
-clGetPlatformIDsForInstanceKHR(
+static cl_int
+clGetPlatformIDsForInstanceKHR_body(
     cl_instance_khr instance,
     cl_uint num_entries,
     cl_platform_id* platforms,
@@ -209,6 +310,30 @@ clGetPlatformIDsForInstanceKHR(
         }
     }
     return CL_SUCCESS;
+}
+
+static clGetPlatformIDsForInstanceKHR_t clGetPlatformIDsForInstanceKHR;
+cl_int CL_API_CALL
+clGetPlatformIDsForInstanceKHR(
+    cl_instance_khr instance,
+    cl_uint num_entries,
+    cl_platform_id* platforms,
+    cl_uint* num_platforms)
+{
+#if defined(CL_ENABLE_LAYERS)
+    if (instance->firstLayer)
+        instance->layerDispatch.clGetPlatformIDsForInstanceKHR->dispatch->clGetPlatformIDsForInstanceKHR(
+            instance->layerDispatch.clGetPlatformIDsForInstanceKHR,
+            instance,
+            num_entries,
+            platforms,
+            num_platforms);
+#endif
+    return clGetPlatformIDsForInstanceKHR_body(
+        instance,
+        num_entries,
+        platforms,
+        num_platforms);
 }
 #endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
@@ -352,6 +477,7 @@ static inline cl_int clGetPlatformIDs_body(
     return CL_SUCCESS;
 }
 
+#if defined(CL_ENABLE_LAYERS)
 cl_int CL_API_CALL clGetPlatformIDs_disp(
     cl_uint num_entries,
     cl_platform_id* platforms,
@@ -362,6 +488,7 @@ cl_int CL_API_CALL clGetPlatformIDs_disp(
         platforms,
         num_platforms);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPlatformIDs(
     cl_uint num_entries,
@@ -420,12 +547,14 @@ static inline void* clGetExtensionFunctionAddress_body(
     return NULL;
 }
 
+#if defined(CL_ENABLE_LAYERS)
 void* CL_API_CALL clGetExtensionFunctionAddress_disp(
     const char* function_name)
 {
     return clGetExtensionFunctionAddress_body(
         function_name);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddress(
     const char* function_name)
@@ -482,6 +611,7 @@ static inline void* clGetExtensionFunctionAddressForPlatform_body(
 #undef KHR_ICD_REJECT_EXTENSION_FUNCTION
 }
 
+#if defined(CL_ENABLE_LAYERS)
 void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* function_name)
@@ -490,6 +620,7 @@ void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
         platform,
         function_name);
 }
+#endif // defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
     cl_platform_id platform,
@@ -498,6 +629,13 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
     // make sure the ICD is initialized
     khrIcdInitialize();
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetExtensionFunctionAddressForPlatform)->clGetExtensionFunctionAddressForPlatform(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetExtensionFunctionAddressForPlatform),
+            platform,
+            function_name);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetExtensionFunctionAddressForPlatform(
             platform,
@@ -507,6 +645,43 @@ CL_API_ENTRY void* CL_API_CALL clGetExtensionFunctionAddressForPlatform(
         platform,
         function_name);
 }
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+clGetPlatformIDsForInstanceKHR_instance_t clGetPlatformIDsForInstanceKHR_inst;
+
+cl_int CL_API_CALL
+clGetPlatformIDsForInstanceKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_instance_khr instance,
+    cl_uint num_entries,
+    cl_platform_id *platforms,
+    cl_uint *num_platforms)
+{
+    (void)layer;
+    return clGetPlatformIDsForInstanceKHR_body(
+        instance,
+        num_entries,
+        platforms,
+        num_platforms);
+}
+
+clGetExtensionFunctionAddressForPlatform_instance_t clGetExtensionFunctionAddressForPlatform_inst;
+
+void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    const char* function_name)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetExtensionFunctionAddressForPlatform(
+            platform,
+            function_name);
+    return clGetExtensionFunctionAddressForPlatform_body(
+        platform,
+        function_name);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 #ifdef __cplusplus
 }

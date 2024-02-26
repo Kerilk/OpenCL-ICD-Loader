@@ -90,8 +90,11 @@ clIcdDestroyInstancePlatformKHR_fn;
 #endif //!defined(CL_INSTANCE_PLATFORM_PROPERTIES_LIST_END_KHR)
 
 #if !defined(CL_INVALID_INSTANCE_KHR)
-#define CL_INVALID_INSTANCE_KHR             -1154
+#define CL_INVALID_INSTANCE_KHR                         -1154
+#define CL_INVALID_INSTANCE_LAYER_KHR                   -1155
 
+#define CL_INSTANCE_PROPERTIES_LAYERS_KHR              0x4250
+#define CL_INSTANCE_PROPERTIES_LAYERS_LIST_END_KHR          0
 #define CL_INSTANCE_PROPERTIES_LIST_END_KHR ((cl_instance_properties_khr)0)
 
 typedef struct _cl_instance_khr *cl_instance_khr;

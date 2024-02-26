@@ -45,7 +45,7 @@ For most Windows and Linux usages, the following steps are sufficient to build t
 
 1. Install OpenCL Headers CMake package
 
-        cmake -D CMAKE_INSTALL_PREFIX=./OpenCL-Headers/install -S ./OpenCL-Headers -B ./OpenCL-Headers/build 
+        cmake -D CMAKE_INSTALL_PREFIX=./OpenCL-Headers/install -S ./OpenCL-Headers -B ./OpenCL-Headers/build
         cmake --build ./OpenCL-Headers/build --target install
 
 1. Build and install OpenCL ICD Loader CMake package. _(Note that `CMAKE_PREFIX_PATH` need to be an absolute path. Update as needed.)_

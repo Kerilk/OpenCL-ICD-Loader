@@ -121,6 +121,21 @@ static void run_silently(void (*pfn)(void))
     atexit(silence_layers);
 }
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+void printInstanceLayerInfo(const struct KHRInstanceLayer *layer)
+{
+    cl_instance_layer_api_version api_version = 0;
+    clGetInstanceLayerInfo_fn p_clGetInstanceLayerInfo = layer->p_clGetInstanceLayerInfo;
+    cl_int result = CL_SUCCESS;
+
+    printf("%s:\n", layer->libraryName);
+    result = p_clGetInstanceLayerInfo(CL_INSTANCE_LAYER_API_VERSION, sizeof(api_version), &api_version, NULL);
+    if (CL_SUCCESS == result)
+        printf("\tCL_INSTANCE_LAYER_API_VERSION: %d\n", (int)api_version);
+    printf("\tCL_INSTANCE_LAYER_NAME: %s\n", layer->name);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
 int main (int argc, char *argv[])
 {
     (void)argc;
@@ -132,6 +147,14 @@ int main (int argc, char *argv[])
         printLayerInfo(layer);
         layer = layer->next;
     }
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    const struct KHRInstanceLayer *instanceLayer = khrFirstInstanceLayer;
+    while (instanceLayer)
+    {
+        printInstanceLayerInfo(instanceLayer);
+        instanceLayer = instanceLayer->next;
+    }
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     run_silently(&khrIcdDeinitialize);
     return 0;
 }

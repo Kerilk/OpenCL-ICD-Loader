@@ -1,0 +1,9 @@
+{
+    global:
+clGetInstanceLayerInfo;
+clInitInstanceLayer;
+clDeinitInstanceLayer;
+
+    local:
+        *;
+};

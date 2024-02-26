@@ -60,6 +60,9 @@
 #include <CL/cl_egl.h>
 #include <CL/cl_icd.h>
 #include "cl_khr_icd2.h"
+#if defined(CL_ENABLE_LAYERS)
+#include "cl_instance_layer.h"
+#endif
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
@@ -68,9 +71,26 @@ extern void khrIcd2PopulateDispatchTable(
     clIcdGetFunctionAddressForPlatformKHR_fn p_clIcdGetFunctionAddressForPlatform,
     struct _cl_icd_dispatch* dispatch);
 
+#if defined(CL_ENABLE_LAYERS)
+struct KHRInstanceLayerItem;
+struct KHRInstanceLayerItem
+{
+    cl_icd_instance_layer layer;
+    cl_icd_instance_dispatch dispatch;
+    cl_icd_layer_dispatch layerDispatch;
+    struct KHRInstanceLayer *instanceLayer;
+    struct KHRInstanceLayerItem *next;
+};
+
+extern struct KHRInstanceLayerItem khrInstanceLayerTerminator;
+#endif // defined(CL_ENABLE_LAYERS)
+
 struct KHRDisp
 {
     struct _cl_icd_dispatch dispatch;
+#if defined(CL_ENABLE_LAYERS)
+    cl_icd_layer_dispatch *layerDispatch;
+#endif
 };
 
 #define KHR_ICD2_HAS_TAG(object)                                               \
@@ -85,6 +105,27 @@ struct KHRDisp
     cl_icd_dispatch *dispatch;                                                 \
     struct KHRDisp  *dispData;                                                 \
 }
+
+#if defined(CL_ENABLE_LAYERS)
+
+#define KHR_ICD_HAS_INSTANCE_LAYERS(object)                                    \
+((object) && KHR_ICD2_HAS_TAG(object) && (object)->dispData->layerDispatch)
+
+#define KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(object, api)                        \
+((object)->dispData->layerDispatch->api)
+
+#define KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(object, api)               \
+KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(object, api)->dispatch
+
+#define KHR_ICD_INSTANCE_LAYER_FIRST_ENTRY(object, api)                        \
+KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(object, api)->api
+
+#define KHR_ICD_INSTANCE_LAYER_CALL_FIRST(object, api, ...)                    \
+KHR_ICD_INSTANCE_LAYER_FIRST_ENTRY(object, api)(                               \
+    KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(object, api), __VA_ARGS__               \
+)
+
+#endif // defined(CL_ENABLE_LAYERS)
 
 #else // ! defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 

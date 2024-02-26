@@ -227,6 +227,12 @@ void khrIcdOsVendorsEnumerate(void)
     khrIcdOsDirEnumerate(LAYER_PATH, "OPENCL_LAYER_PATH", ".lay", khrIcdLayerAdd, 1);
 
     khrIcdLayersEnumerateEnv();
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    khrIcdOsDirEnumerate(INSTANCE_LAYER_PATH, "OPENCL_INSTANCE_LAYER_PATH", ".ilay", khrIcdInstanceLayerAdd, 1);
+
+    khrIcdInstanceLayersEnumerateEnv();
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 }
 

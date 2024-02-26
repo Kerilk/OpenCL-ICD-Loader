@@ -53,6 +53,9 @@
 #include <CL/cl_icd.h>
 #if defined(CL_ENABLE_LAYERS)
 #include <CL/cl_layer.h>
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+#include "cl_instance_layer.h"
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 #include <stdio.h>
 
@@ -120,6 +123,10 @@ struct _cl_instance_khr
     cl_platform_id *platforms;
     KHRicdVendor **vendors;
     struct KHRDisp *dispDatas;
+#if defined(CL_ENABLE_LAYERS)
+    struct KHRInstanceLayerItem *firstLayer;
+    cl_icd_layer_dispatch layerDispatch;
+#endif
 };
 #endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 
@@ -155,6 +162,29 @@ struct KHRLayer
 extern struct KHRLayer * khrFirstLayer;
 extern const struct _cl_icd_dispatch khrMainDispatch;
 extern const struct _cl_icd_dispatch khrDeinitDispatch;
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+struct KHRInstanceLayer;
+struct KHRInstanceLayer
+{
+    // the loaded library object (true type varies on Linux versus Windows)
+    void *library;
+    // The next loaded instance layer
+    struct KHRInstanceLayer *next;
+#ifdef CL_LAYER_INFO
+    // The layer library name
+    char *libraryName;
+    // the pointer to the clGetLayerInstanceInfo function
+    clGetInstanceLayerInfo_fn p_clGetInstanceLayerInfo;
+#endif
+    // pointers to layer functions
+    clInitInstanceLayer_fn p_clInitInstanceLayer;
+    clDeinitInstanceLayer_fn p_clDeinitInstanceLayer;
+    char *name;
+};
+
+extern struct KHRInstanceLayer * khrFirstInstanceLayer;
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
 #endif // defined(CL_ENABLE_LAYERS)
 
 /* 
@@ -190,6 +220,12 @@ void khrIcdLayersEnumerateEnv(void);
 
 // add a layer to the layer chain
 void khrIcdLayerAdd(const char *libraryName);
+
+// read instance layers from environment variables
+void khrIcdInstanceLayersEnumerateEnv(void);
+
+// add an instance layer to the instance layer chain
+void khrIcdInstanceLayerAdd(const char *libraryName);
 
 // parse properties and determine the platform to use from them
 void khrIcdContextPropertiesGetPlatform(

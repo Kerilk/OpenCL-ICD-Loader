@@ -401,6 +401,80 @@ BOOL CALLBACK khrIcdOsVendorsEnumerate(PINIT_ONCE InitOnce, PVOID Parameter, PVO
     result = RegCloseKey(layersKey);
 
     khrIcdLayersEnumerateEnv();
+    // Instance layers
+    layersName = "SOFTWARE\\Khronos\\OpenCL\\InstanceLayers";
+    layersKey = NULL;
+
+    KHR_ICD_TRACE("Opening key HKLM\\%s...\n", layersName);
+    result = RegOpenKeyExA(
+        HKEY_LOCAL_MACHINE,
+        layersName,
+        0,
+        KEY_READ,
+        &layersKey);
+    if (ERROR_SUCCESS != result)
+    {
+        KHR_ICD_TRACE("Failed to open instance layers key %s, continuing\n", layersName);
+    }
+    else
+    {
+        // for each value
+        for (dwIndex = 0;; ++dwIndex)
+        {
+            char cszLibraryName[1024] = {0};
+            DWORD dwLibraryNameSize = sizeof(cszLibraryName);
+            DWORD dwLibraryNameType = 0;
+            DWORD dwValue = 0;
+            DWORD dwValueSize = sizeof(dwValue);
+
+            // read the value name
+            KHR_ICD_TRACE("Reading value %"PRIuDW"...\n", dwIndex);
+            result = RegEnumValueA(
+                  layersKey,
+                  dwIndex,
+                  cszLibraryName,
+                  &dwLibraryNameSize,
+                  NULL,
+                  &dwLibraryNameType,
+                  (LPBYTE)&dwValue,
+                  &dwValueSize);
+            // if RegEnumKeyEx fails, we are done with the enumeration
+            if (ERROR_SUCCESS != result)
+            {
+                KHR_ICD_TRACE("Failed to read value %"PRIuDW", done reading key.\n", dwIndex);
+                break;
+            }
+            KHR_ICD_TRACE("Value %s found...\n", cszLibraryName);
+
+            // Require that the value be a DWORD and equal 0
+            if (REG_DWORD != dwLibraryNameType)
+            {
+                KHR_ICD_TRACE("Value not a DWORD, skipping\n");
+                continue;
+            }
+            if (dwValue)
+            {
+                KHR_ICD_TRACE("Value not zero, skipping\n");
+                continue;
+            }
+            // add the library
+            status |= layerAdd(cszLibraryName, dwValue);
+        }
+        for (WinLayer* iterLayer = pWinLayerBegin; iterLayer != pWinLayerEnd; ++iterLayer)
+        {
+            khrIcdInstanceLayerAdd(iterLayer->szName);
+            layerFree(iterLayer);
+        }
+    }
+
+    free(pWinLayerBegin);
+    pWinLayerBegin = NULL;
+    pWinLayerEnd = NULL;
+    pWinLayerCapacity = NULL;
+
+    result = RegCloseKey(layersKey);
+
+    khrIcdInstanceLayersEnumerateEnv();
 #endif // defined(CL_ENABLE_LAYERS)
     return status;
 }

@@ -30,9 +30,13 @@
 #ifndef LAYER_PATH
 #define LAYER_PATH "/system/vendor/Khronos/OpenCL/layers"
 #endif // LAYER_PATH
+#ifndef INSTANCE_LAYER_PATH
+#define INSTANCE_LAYER_PATH "/system/vendor/Khronos/OpenCL/instance-layers"
+#endif // INSTANCE_LAYER_PATH
 #else
 #define ICD_VENDOR_PATH "/etc/OpenCL/vendors"
 #define LAYER_PATH "/etc/OpenCL/layers"
+#define INSTANCE_LAYER_PATH "/etc/OpenCL/instance-layers"
 #endif // ANDROID
 
 #elif defined(_WIN32)

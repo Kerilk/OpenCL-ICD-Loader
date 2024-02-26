@@ -40,6 +40,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPlatformInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetPlatformInfo)->clGetPlatformInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetPlatformInfo),
+            platform,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetPlatformInfo(
             platform,
@@ -77,6 +87,34 @@ static cl_int CL_API_CALL clGetPlatformInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetPlatformInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    cl_platform_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetPlatformInfo(
+            platform,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    return KHR_ICD2_DISPATCH(platform)->clGetPlatformInfo(
+        platform,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     cl_platform_id platform,
@@ -86,6 +124,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDs(
     cl_uint* num_devices)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetDeviceIDs)->clGetDeviceIDs(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetDeviceIDs),
+            platform,
+            device_type,
+            num_entries,
+            devices,
+            num_devices);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDs(
             platform,
@@ -123,6 +171,34 @@ static cl_int CL_API_CALL clGetDeviceIDs_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDs_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    cl_device_type device_type,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceIDs(
+            platform,
+            device_type,
+            num_entries,
+            devices,
+            num_devices);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    return KHR_ICD2_DISPATCH(platform)->clGetDeviceIDs(
+        platform,
+        device_type,
+        num_entries,
+        devices,
+        num_devices);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
     cl_device_id device,
@@ -132,6 +208,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clGetDeviceInfo)->clGetDeviceInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clGetDeviceInfo),
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceInfo(
             device,
@@ -169,6 +255,34 @@ static cl_int CL_API_CALL clGetDeviceInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device,
+    cl_device_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceInfo(
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clGetDeviceInfo(
+        device,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
     const cl_context_properties* properties,
@@ -178,7 +292,22 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
     void* user_data,
     cl_int* errcode_ret)
 {
+    cl_device_id device = NULL;
+    if (num_devices != 0 && devices) {
+        device = devices[0];
+    }
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clCreateContext)->clCreateContext(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clCreateContext),
+            properties,
+            num_devices,
+            devices,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateContext(
             properties,
@@ -191,8 +320,8 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContext(
     if (num_devices == 0 || devices == NULL) {
         KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(devices[0], CL_INVALID_DEVICE);
-    return KHR_ICD2_DISPATCH(devices[0])->clCreateContext(
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clCreateContext(
         properties,
         num_devices,
         devices,
@@ -211,11 +340,15 @@ static cl_context CL_API_CALL clCreateContext_disp(
     void* user_data,
     cl_int* errcode_ret)
 {
+    cl_device_id device = NULL;
+    if (num_devices != 0 && devices) {
+        device = devices[0];
+    }
     if (num_devices == 0 || devices == NULL) {
         KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(devices[0], CL_INVALID_DEVICE);
-    return KHR_ICD2_DISPATCH(devices[0])->clCreateContext(
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clCreateContext(
         properties,
         num_devices,
         devices,
@@ -224,6 +357,44 @@ static cl_context CL_API_CALL clCreateContext_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_context CL_API_CALL clCreateContext_inst(
+    const cl_icd_instance_layer *layer,
+    const cl_context_properties* properties,
+    cl_uint num_devices,
+    const cl_device_id* devices,
+    void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    cl_device_id device = NULL;
+    if (num_devices != 0 && devices) {
+        device = devices[0];
+    }
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateContext(
+            properties,
+            num_devices,
+            devices,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+    if (num_devices == 0 || devices == NULL) {
+        KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(NULL, CL_INVALID_VALUE);
+    }
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clCreateContext(
+        properties,
+        num_devices,
+        devices,
+        pfn_notify,
+        user_data,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -235,7 +406,19 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
     cl_int* errcode_ret)
 {
     khrIcdInitialize();
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clCreateContextFromType)->clCreateContextFromType(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clCreateContextFromType),
+            properties,
+            device_type,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateContextFromType(
             properties,
@@ -244,8 +427,6 @@ CL_API_ENTRY cl_context CL_API_CALL clCreateContextFromType(
             user_data,
             errcode_ret);
 #endif // defined(CL_ENABLE_LAYERS)
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
     return KHR_ICD2_DISPATCH(platform)->clCreateContextFromType(
         properties,
@@ -278,11 +459,48 @@ static cl_context CL_API_CALL clCreateContextFromType_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_context CL_API_CALL clCreateContextFromType_inst(
+    const cl_icd_instance_layer *layer,
+    const cl_context_properties* properties,
+    cl_device_type device_type,
+    void (CL_CALLBACK* pfn_notify)(const char* errinfo, const void* private_info, size_t cb, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    khrIcdInitialize();
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateContextFromType(
+            properties,
+            device_type,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(platform, CL_INVALID_PLATFORM);
+    return KHR_ICD2_DISPATCH(platform)->clCreateContextFromType(
+        properties,
+        device_type,
+        pfn_notify,
+        user_data,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainContext(
     cl_context context)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clRetainContext)->clRetainContext(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clRetainContext),
+            context);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainContext(
             context);
@@ -304,11 +522,33 @@ static cl_int CL_API_CALL clRetainContext_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainContext_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainContext(
+            context);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clRetainContext(
+        context);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseContext(
     cl_context context)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clReleaseContext)->clReleaseContext(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clReleaseContext),
+            context);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseContext(
             context);
@@ -330,6 +570,22 @@ static cl_int CL_API_CALL clReleaseContext_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseContext_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseContext(
+            context);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clReleaseContext(
+        context);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
     cl_context context,
@@ -339,6 +595,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetContextInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clGetContextInfo)->clGetContextInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clGetContextInfo),
+            context,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetContextInfo(
             context,
@@ -376,11 +642,45 @@ static cl_int CL_API_CALL clGetContextInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetContextInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_context_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetContextInfo(
+            context,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clGetContextInfo(
+        context,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainCommandQueue(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clRetainCommandQueue)->clRetainCommandQueue(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clRetainCommandQueue),
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainCommandQueue(
             command_queue);
@@ -402,11 +702,33 @@ static cl_int CL_API_CALL clRetainCommandQueue_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainCommandQueue_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainCommandQueue(
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clRetainCommandQueue(
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseCommandQueue(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clReleaseCommandQueue)->clReleaseCommandQueue(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clReleaseCommandQueue),
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseCommandQueue(
             command_queue);
@@ -428,6 +750,22 @@ static cl_int CL_API_CALL clReleaseCommandQueue_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseCommandQueue_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseCommandQueue(
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clReleaseCommandQueue(
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
     cl_command_queue command_queue,
@@ -437,6 +775,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetCommandQueueInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clGetCommandQueueInfo)->clGetCommandQueueInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clGetCommandQueueInfo),
+            command_queue,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetCommandQueueInfo(
             command_queue,
@@ -474,6 +822,34 @@ static cl_int CL_API_CALL clGetCommandQueueInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetCommandQueueInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_command_queue_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetCommandQueueInfo(
+            command_queue,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clGetCommandQueueInfo(
+        command_queue,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
     cl_context context,
@@ -483,6 +859,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBuffer(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateBuffer)->clCreateBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateBuffer),
+            context,
+            flags,
+            size,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateBuffer(
             context,
@@ -520,11 +906,45 @@ static cl_mem CL_API_CALL clCreateBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    size_t size,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateBuffer(
+            context,
+            flags,
+            size,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateBuffer(
+        context,
+        flags,
+        size,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainMemObject(
     cl_mem memobj)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clRetainMemObject)->clRetainMemObject(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clRetainMemObject),
+            memobj);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainMemObject(
             memobj);
@@ -546,11 +966,33 @@ static cl_int CL_API_CALL clRetainMemObject_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainMemObject_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainMemObject(
+            memobj);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(memobj)->clRetainMemObject(
+        memobj);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseMemObject(
     cl_mem memobj)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clReleaseMemObject)->clReleaseMemObject(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clReleaseMemObject),
+            memobj);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseMemObject(
             memobj);
@@ -572,6 +1014,22 @@ static cl_int CL_API_CALL clReleaseMemObject_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseMemObject_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseMemObject(
+            memobj);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(memobj)->clReleaseMemObject(
+        memobj);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
     cl_context context,
@@ -582,6 +1040,17 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSupportedImageFormats(
     cl_uint* num_image_formats)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clGetSupportedImageFormats)->clGetSupportedImageFormats(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clGetSupportedImageFormats),
+            context,
+            flags,
+            image_type,
+            num_entries,
+            image_formats,
+            num_image_formats);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetSupportedImageFormats(
             context,
@@ -623,6 +1092,37 @@ static cl_int CL_API_CALL clGetSupportedImageFormats_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetSupportedImageFormats_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_mem_object_type image_type,
+    cl_uint num_entries,
+    cl_image_format* image_formats,
+    cl_uint* num_image_formats)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetSupportedImageFormats(
+            context,
+            flags,
+            image_type,
+            num_entries,
+            image_formats,
+            num_image_formats);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clGetSupportedImageFormats(
+        context,
+        flags,
+        image_type,
+        num_entries,
+        image_formats,
+        num_image_formats);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
     cl_mem memobj,
@@ -632,6 +1132,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetMemObjectInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clGetMemObjectInfo)->clGetMemObjectInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clGetMemObjectInfo),
+            memobj,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetMemObjectInfo(
             memobj,
@@ -669,6 +1179,34 @@ static cl_int CL_API_CALL clGetMemObjectInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetMemObjectInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj,
+    cl_mem_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetMemObjectInfo(
+            memobj,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(memobj)->clGetMemObjectInfo(
+        memobj,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
     cl_mem image,
@@ -678,6 +1216,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetImageInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(image))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(image, clGetImageInfo)->clGetImageInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(image, clGetImageInfo),
+            image,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetImageInfo(
             image,
@@ -715,11 +1263,45 @@ static cl_int CL_API_CALL clGetImageInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetImageInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem image,
+    cl_image_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetImageInfo(
+            image,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(image, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(image)->clGetImageInfo(
+        image,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainSampler(
     cl_sampler sampler)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(sampler))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(sampler, clRetainSampler)->clRetainSampler(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(sampler, clRetainSampler),
+            sampler);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainSampler(
             sampler);
@@ -741,11 +1323,33 @@ static cl_int CL_API_CALL clRetainSampler_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainSampler_inst(
+    const cl_icd_instance_layer *layer,
+    cl_sampler sampler)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainSampler(
+            sampler);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
+    return KHR_ICD2_DISPATCH(sampler)->clRetainSampler(
+        sampler);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseSampler(
     cl_sampler sampler)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(sampler))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(sampler, clReleaseSampler)->clReleaseSampler(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(sampler, clReleaseSampler),
+            sampler);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseSampler(
             sampler);
@@ -767,6 +1371,22 @@ static cl_int CL_API_CALL clReleaseSampler_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseSampler_inst(
+    const cl_icd_instance_layer *layer,
+    cl_sampler sampler)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseSampler(
+            sampler);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
+    return KHR_ICD2_DISPATCH(sampler)->clReleaseSampler(
+        sampler);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
     cl_sampler sampler,
@@ -776,6 +1396,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetSamplerInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(sampler))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(sampler, clGetSamplerInfo)->clGetSamplerInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(sampler, clGetSamplerInfo),
+            sampler,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetSamplerInfo(
             sampler,
@@ -813,6 +1443,34 @@ static cl_int CL_API_CALL clGetSamplerInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetSamplerInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_sampler sampler,
+    cl_sampler_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetSamplerInfo(
+            sampler,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(sampler, CL_INVALID_SAMPLER);
+    return KHR_ICD2_DISPATCH(sampler)->clGetSamplerInfo(
+        sampler,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
     cl_context context,
@@ -822,6 +1480,16 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithSource(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateProgramWithSource)->clCreateProgramWithSource(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateProgramWithSource),
+            context,
+            count,
+            strings,
+            lengths,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithSource(
             context,
@@ -859,6 +1527,34 @@ static cl_program CL_API_CALL clCreateProgramWithSource_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithSource_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_uint count,
+    const char** strings,
+    const size_t* lengths,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateProgramWithSource(
+            context,
+            count,
+            strings,
+            lengths,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateProgramWithSource(
+        context,
+        count,
+        strings,
+        lengths,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
     cl_context context,
@@ -870,6 +1566,18 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBinary(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateProgramWithBinary)->clCreateProgramWithBinary(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateProgramWithBinary),
+            context,
+            num_devices,
+            device_list,
+            lengths,
+            binaries,
+            binary_status,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithBinary(
             context,
@@ -915,11 +1623,51 @@ static cl_program CL_API_CALL clCreateProgramWithBinary_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithBinary_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const size_t* lengths,
+    const unsigned char** binaries,
+    cl_int* binary_status,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateProgramWithBinary(
+            context,
+            num_devices,
+            device_list,
+            lengths,
+            binaries,
+            binary_status,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateProgramWithBinary(
+        context,
+        num_devices,
+        device_list,
+        lengths,
+        binaries,
+        binary_status,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainProgram(
     cl_program program)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clRetainProgram)->clRetainProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clRetainProgram),
+            program);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainProgram(
             program);
@@ -941,11 +1689,33 @@ static cl_int CL_API_CALL clRetainProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainProgram(
+            program);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clRetainProgram(
+        program);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseProgram(
     cl_program program)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clReleaseProgram)->clReleaseProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clReleaseProgram),
+            program);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseProgram(
             program);
@@ -967,6 +1737,22 @@ static cl_int CL_API_CALL clReleaseProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseProgram(
+            program);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clReleaseProgram(
+        program);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
     cl_program program,
@@ -977,6 +1763,17 @@ CL_API_ENTRY cl_int CL_API_CALL clBuildProgram(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clBuildProgram)->clBuildProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clBuildProgram),
+            program,
+            num_devices,
+            device_list,
+            options,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clBuildProgram(
             program,
@@ -1018,6 +1815,37 @@ static cl_int CL_API_CALL clBuildProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clBuildProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clBuildProgram(
+            program,
+            num_devices,
+            device_list,
+            options,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clBuildProgram(
+        program,
+        num_devices,
+        device_list,
+        options,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
     cl_program program,
@@ -1027,6 +1855,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clGetProgramInfo)->clGetProgramInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clGetProgramInfo),
+            program,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetProgramInfo(
             program,
@@ -1064,6 +1902,34 @@ static cl_int CL_API_CALL clGetProgramInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetProgramInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_program_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetProgramInfo(
+            program,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clGetProgramInfo(
+        program,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
     cl_program program,
@@ -1074,6 +1940,17 @@ CL_API_ENTRY cl_int CL_API_CALL clGetProgramBuildInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clGetProgramBuildInfo)->clGetProgramBuildInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clGetProgramBuildInfo),
+            program,
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetProgramBuildInfo(
             program,
@@ -1115,6 +1992,37 @@ static cl_int CL_API_CALL clGetProgramBuildInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetProgramBuildInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_device_id device,
+    cl_program_build_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetProgramBuildInfo(
+            program,
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clGetProgramBuildInfo(
+        program,
+        device,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
     cl_program program,
@@ -1122,6 +2030,14 @@ CL_API_ENTRY cl_kernel CL_API_CALL clCreateKernel(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clCreateKernel)->clCreateKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clCreateKernel),
+            program,
+            kernel_name,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateKernel(
             program,
@@ -1151,6 +2067,28 @@ static cl_kernel CL_API_CALL clCreateKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_kernel CL_API_CALL clCreateKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    const char* kernel_name,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateKernel(
+            program,
+            kernel_name,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clCreateKernel(
+        program,
+        kernel_name,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
     cl_program program,
@@ -1159,6 +2097,15 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateKernelsInProgram(
     cl_uint* num_kernels_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clCreateKernelsInProgram)->clCreateKernelsInProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clCreateKernelsInProgram),
+            program,
+            num_kernels,
+            kernels,
+            num_kernels_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateKernelsInProgram(
             program,
@@ -1192,11 +2139,42 @@ static cl_int CL_API_CALL clCreateKernelsInProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateKernelsInProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_uint num_kernels,
+    cl_kernel* kernels,
+    cl_uint* num_kernels_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateKernelsInProgram(
+            program,
+            num_kernels,
+            kernels,
+            num_kernels_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clCreateKernelsInProgram(
+        program,
+        num_kernels,
+        kernels,
+        num_kernels_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainKernel(
     cl_kernel kernel)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clRetainKernel)->clRetainKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clRetainKernel),
+            kernel);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainKernel(
             kernel);
@@ -1218,11 +2196,33 @@ static cl_int CL_API_CALL clRetainKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainKernel(
+            kernel);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clRetainKernel(
+        kernel);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseKernel(
     cl_kernel kernel)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clReleaseKernel)->clReleaseKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clReleaseKernel),
+            kernel);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseKernel(
             kernel);
@@ -1244,6 +2244,22 @@ static cl_int CL_API_CALL clReleaseKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseKernel(
+            kernel);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clReleaseKernel(
+        kernel);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
     cl_kernel kernel,
@@ -1252,6 +2268,15 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArg(
     const void* arg_value)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clSetKernelArg)->clSetKernelArg(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clSetKernelArg),
+            kernel,
+            arg_index,
+            arg_size,
+            arg_value);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelArg(
             kernel,
@@ -1285,6 +2310,31 @@ static cl_int CL_API_CALL clSetKernelArg_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelArg_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_uint arg_index,
+    size_t arg_size,
+    const void* arg_value)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetKernelArg(
+            kernel,
+            arg_index,
+            arg_size,
+            arg_value);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clSetKernelArg(
+        kernel,
+        arg_index,
+        arg_size,
+        arg_value);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
     cl_kernel kernel,
@@ -1294,6 +2344,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clGetKernelInfo)->clGetKernelInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clGetKernelInfo),
+            kernel,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelInfo(
             kernel,
@@ -1331,6 +2391,34 @@ static cl_int CL_API_CALL clGetKernelInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_kernel_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelInfo(
+            kernel,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clGetKernelInfo(
+        kernel,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
     cl_kernel kernel,
@@ -1341,6 +2429,17 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelWorkGroupInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clGetKernelWorkGroupInfo)->clGetKernelWorkGroupInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clGetKernelWorkGroupInfo),
+            kernel,
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelWorkGroupInfo(
             kernel,
@@ -1382,22 +2481,64 @@ static cl_int CL_API_CALL clGetKernelWorkGroupInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelWorkGroupInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_device_id device,
+    cl_kernel_work_group_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelWorkGroupInfo(
+            kernel,
+            device,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clGetKernelWorkGroupInfo(
+        kernel,
+        device,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clWaitForEvents(
     cl_uint num_events,
     const cl_event* event_list)
 {
+    cl_event event = NULL;
+    if (num_events != 0 && event_list) {
+        event = event_list[0];
+    }
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clWaitForEvents)->clWaitForEvents(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clWaitForEvents),
+            num_events,
+            event_list);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clWaitForEvents(
             num_events,
             event_list);
 #endif // defined(CL_ENABLE_LAYERS)
     if (num_events == 0 || event_list == NULL) {
-        return CL_INVALID_VALUE;
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_VALUE);
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event_list[0], CL_INVALID_EVENT);
-    return KHR_ICD2_DISPATCH(event_list[0])->clWaitForEvents(
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clWaitForEvents(
         num_events,
         event_list);
 }
@@ -1408,15 +2549,45 @@ static cl_int CL_API_CALL clWaitForEvents_disp(
     cl_uint num_events,
     const cl_event* event_list)
 {
-    if (num_events == 0 || event_list == NULL) {
-        return CL_INVALID_VALUE;
+    cl_event event = NULL;
+    if (num_events != 0 && event_list) {
+        event = event_list[0];
     }
-    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event_list[0], CL_INVALID_EVENT);
-    return KHR_ICD2_DISPATCH(event_list[0])->clWaitForEvents(
+    if (num_events == 0 || event_list == NULL) {
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_VALUE);
+    }
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clWaitForEvents(
         num_events,
         event_list);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clWaitForEvents_inst(
+    const cl_icd_instance_layer *layer,
+    cl_uint num_events,
+    const cl_event* event_list)
+{
+    (void)layer;
+    cl_event event = NULL;
+    if (num_events != 0 && event_list) {
+        event = event_list[0];
+    }
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clWaitForEvents(
+            num_events,
+            event_list);
+    if (num_events == 0 || event_list == NULL) {
+        KHR_ICD_ERROR_RETURN_ERROR(CL_INVALID_VALUE);
+    }
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clWaitForEvents(
+        num_events,
+        event_list);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -1428,6 +2599,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clGetEventInfo)->clGetEventInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clGetEventInfo),
+            event,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetEventInfo(
             event,
@@ -1465,11 +2646,45 @@ static cl_int CL_API_CALL clGetEventInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetEventInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event,
+    cl_event_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetEventInfo(
+            event,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clGetEventInfo(
+        event,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainEvent(
     cl_event event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clRetainEvent)->clRetainEvent(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clRetainEvent),
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainEvent(
             event);
@@ -1491,11 +2706,33 @@ static cl_int CL_API_CALL clRetainEvent_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainEvent_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainEvent(
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clRetainEvent(
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseEvent(
     cl_event event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clReleaseEvent)->clReleaseEvent(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clReleaseEvent),
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseEvent(
             event);
@@ -1517,6 +2754,22 @@ static cl_int CL_API_CALL clReleaseEvent_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseEvent_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseEvent(
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clReleaseEvent(
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
     cl_event event,
@@ -1526,6 +2779,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetEventProfilingInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clGetEventProfilingInfo)->clGetEventProfilingInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clGetEventProfilingInfo),
+            event,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetEventProfilingInfo(
             event,
@@ -1563,11 +2826,45 @@ static cl_int CL_API_CALL clGetEventProfilingInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetEventProfilingInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event,
+    cl_profiling_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetEventProfilingInfo(
+            event,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clGetEventProfilingInfo(
+        event,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFlush(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clFlush)->clFlush(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clFlush),
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clFlush(
             command_queue);
@@ -1589,11 +2886,33 @@ static cl_int CL_API_CALL clFlush_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clFlush_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clFlush(
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clFlush(
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clFinish(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clFinish)->clFinish(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clFinish),
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clFinish(
             command_queue);
@@ -1615,6 +2934,22 @@ static cl_int CL_API_CALL clFinish_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clFinish_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clFinish(
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clFinish(
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
     cl_command_queue command_queue,
@@ -1628,6 +2963,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBuffer(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReadBuffer)->clEnqueueReadBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReadBuffer),
+            command_queue,
+            buffer,
+            blocking_read,
+            offset,
+            size,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadBuffer(
             command_queue,
@@ -1681,6 +3030,46 @@ static cl_int CL_API_CALL clEnqueueReadBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_read,
+    size_t offset,
+    size_t size,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReadBuffer(
+            command_queue,
+            buffer,
+            blocking_read,
+            offset,
+            size,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReadBuffer(
+        command_queue,
+        buffer,
+        blocking_read,
+        offset,
+        size,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
     cl_command_queue command_queue,
@@ -1694,6 +3083,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBuffer(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueWriteBuffer)->clEnqueueWriteBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueWriteBuffer),
+            command_queue,
+            buffer,
+            blocking_write,
+            offset,
+            size,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteBuffer(
             command_queue,
@@ -1747,6 +3150,46 @@ static cl_int CL_API_CALL clEnqueueWriteBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_write,
+    size_t offset,
+    size_t size,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueWriteBuffer(
+            command_queue,
+            buffer,
+            blocking_write,
+            offset,
+            size,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueWriteBuffer(
+        command_queue,
+        buffer,
+        blocking_write,
+        offset,
+        size,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
     cl_command_queue command_queue,
@@ -1760,6 +3203,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBuffer(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueCopyBuffer)->clEnqueueCopyBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueCopyBuffer),
+            command_queue,
+            src_buffer,
+            dst_buffer,
+            src_offset,
+            dst_offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBuffer(
             command_queue,
@@ -1813,6 +3270,46 @@ static cl_int CL_API_CALL clEnqueueCopyBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_buffer,
+    size_t src_offset,
+    size_t dst_offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueCopyBuffer(
+            command_queue,
+            src_buffer,
+            dst_buffer,
+            src_offset,
+            dst_offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueCopyBuffer(
+        command_queue,
+        src_buffer,
+        dst_buffer,
+        src_offset,
+        dst_offset,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
     cl_command_queue command_queue,
@@ -1828,6 +3325,22 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadImage(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReadImage)->clEnqueueReadImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReadImage),
+            command_queue,
+            image,
+            blocking_read,
+            origin,
+            region,
+            row_pitch,
+            slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadImage(
             command_queue,
@@ -1889,6 +3402,52 @@ static cl_int CL_API_CALL clEnqueueReadImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_read,
+    const size_t* origin,
+    const size_t* region,
+    size_t row_pitch,
+    size_t slice_pitch,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReadImage(
+            command_queue,
+            image,
+            blocking_read,
+            origin,
+            region,
+            row_pitch,
+            slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReadImage(
+        command_queue,
+        image,
+        blocking_read,
+        origin,
+        region,
+        row_pitch,
+        slice_pitch,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
     cl_command_queue command_queue,
@@ -1904,6 +3463,22 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteImage(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueWriteImage)->clEnqueueWriteImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueWriteImage),
+            command_queue,
+            image,
+            blocking_write,
+            origin,
+            region,
+            input_row_pitch,
+            input_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteImage(
             command_queue,
@@ -1965,6 +3540,52 @@ static cl_int CL_API_CALL clEnqueueWriteImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_write,
+    const size_t* origin,
+    const size_t* region,
+    size_t input_row_pitch,
+    size_t input_slice_pitch,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueWriteImage(
+            command_queue,
+            image,
+            blocking_write,
+            origin,
+            region,
+            input_row_pitch,
+            input_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueWriteImage(
+        command_queue,
+        image,
+        blocking_write,
+        origin,
+        region,
+        input_row_pitch,
+        input_slice_pitch,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
     cl_command_queue command_queue,
@@ -1978,6 +3599,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImage(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueCopyImage)->clEnqueueCopyImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueCopyImage),
+            command_queue,
+            src_image,
+            dst_image,
+            src_origin,
+            dst_origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyImage(
             command_queue,
@@ -2031,6 +3666,46 @@ static cl_int CL_API_CALL clEnqueueCopyImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem src_image,
+    cl_mem dst_image,
+    const size_t* src_origin,
+    const size_t* dst_origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueCopyImage(
+            command_queue,
+            src_image,
+            dst_image,
+            src_origin,
+            dst_origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueCopyImage(
+        command_queue,
+        src_image,
+        dst_image,
+        src_origin,
+        dst_origin,
+        region,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
     cl_command_queue command_queue,
@@ -2044,6 +3719,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyImageToBuffer(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueCopyImageToBuffer)->clEnqueueCopyImageToBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueCopyImageToBuffer),
+            command_queue,
+            src_image,
+            dst_buffer,
+            src_origin,
+            region,
+            dst_offset,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyImageToBuffer(
             command_queue,
@@ -2097,6 +3786,46 @@ static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyImageToBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem src_image,
+    cl_mem dst_buffer,
+    const size_t* src_origin,
+    const size_t* region,
+    size_t dst_offset,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueCopyImageToBuffer(
+            command_queue,
+            src_image,
+            dst_buffer,
+            src_origin,
+            region,
+            dst_offset,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueCopyImageToBuffer(
+        command_queue,
+        src_image,
+        dst_buffer,
+        src_origin,
+        region,
+        dst_offset,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
     cl_command_queue command_queue,
@@ -2110,6 +3839,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferToImage(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueCopyBufferToImage)->clEnqueueCopyBufferToImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueCopyBufferToImage),
+            command_queue,
+            src_buffer,
+            dst_image,
+            src_offset,
+            dst_origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBufferToImage(
             command_queue,
@@ -2163,6 +3906,46 @@ static cl_int CL_API_CALL clEnqueueCopyBufferToImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBufferToImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_image,
+    size_t src_offset,
+    const size_t* dst_origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueCopyBufferToImage(
+            command_queue,
+            src_buffer,
+            dst_image,
+            src_offset,
+            dst_origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueCopyBufferToImage(
+        command_queue,
+        src_buffer,
+        dst_image,
+        src_offset,
+        dst_origin,
+        region,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
     cl_command_queue command_queue,
@@ -2177,6 +3960,21 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapBuffer(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueMapBuffer)->clEnqueueMapBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueMapBuffer),
+            command_queue,
+            buffer,
+            blocking_map,
+            map_flags,
+            offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMapBuffer(
             command_queue,
@@ -2234,6 +4032,49 @@ static void* CL_API_CALL clEnqueueMapBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clEnqueueMapBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_map,
+    cl_map_flags map_flags,
+    size_t offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueMapBuffer(
+            command_queue,
+            buffer,
+            blocking_map,
+            map_flags,
+            offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueMapBuffer(
+        command_queue,
+        buffer,
+        blocking_map,
+        map_flags,
+        offset,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
     cl_command_queue command_queue,
@@ -2250,6 +4091,23 @@ CL_API_ENTRY void* CL_API_CALL clEnqueueMapImage(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueMapImage)->clEnqueueMapImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueMapImage),
+            command_queue,
+            image,
+            blocking_map,
+            map_flags,
+            origin,
+            region,
+            image_row_pitch,
+            image_slice_pitch,
+            num_events_in_wait_list,
+            event_wait_list,
+            event,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMapImage(
             command_queue,
@@ -2315,6 +4173,55 @@ static void* CL_API_CALL clEnqueueMapImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clEnqueueMapImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem image,
+    cl_bool blocking_map,
+    cl_map_flags map_flags,
+    const size_t* origin,
+    const size_t* region,
+    size_t* image_row_pitch,
+    size_t* image_slice_pitch,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueMapImage(
+            command_queue,
+            image,
+            blocking_map,
+            map_flags,
+            origin,
+            region,
+            image_row_pitch,
+            image_slice_pitch,
+            num_events_in_wait_list,
+            event_wait_list,
+            event,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueMapImage(
+        command_queue,
+        image,
+        blocking_map,
+        map_flags,
+        origin,
+        region,
+        image_row_pitch,
+        image_slice_pitch,
+        num_events_in_wait_list,
+        event_wait_list,
+        event,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
     cl_command_queue command_queue,
@@ -2325,6 +4232,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueUnmapMemObject(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueUnmapMemObject)->clEnqueueUnmapMemObject(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueUnmapMemObject),
+            command_queue,
+            memobj,
+            mapped_ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueUnmapMemObject(
             command_queue,
@@ -2366,6 +4284,37 @@ static cl_int CL_API_CALL clEnqueueUnmapMemObject_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueUnmapMemObject_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem memobj,
+    void* mapped_ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueUnmapMemObject(
+            command_queue,
+            memobj,
+            mapped_ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueUnmapMemObject(
+        command_queue,
+        memobj,
+        mapped_ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
     cl_command_queue command_queue,
@@ -2379,6 +4328,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNDRangeKernel(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueNDRangeKernel)->clEnqueueNDRangeKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueNDRangeKernel),
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            local_work_size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueNDRangeKernel(
             command_queue,
@@ -2432,6 +4395,46 @@ static cl_int CL_API_CALL clEnqueueNDRangeKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueNDRangeKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint work_dim,
+    const size_t* global_work_offset,
+    const size_t* global_work_size,
+    const size_t* local_work_size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueNDRangeKernel(
+            command_queue,
+            kernel,
+            work_dim,
+            global_work_offset,
+            global_work_size,
+            local_work_size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueNDRangeKernel(
+        command_queue,
+        kernel,
+        work_dim,
+        global_work_offset,
+        global_work_size,
+        local_work_size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
     cl_command_queue command_queue,
@@ -2446,6 +4449,21 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueNativeKernel(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueNativeKernel)->clEnqueueNativeKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueNativeKernel),
+            command_queue,
+            user_func,
+            args,
+            cb_args,
+            num_mem_objects,
+            mem_list,
+            args_mem_loc,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueNativeKernel(
             command_queue,
@@ -2503,6 +4521,49 @@ static cl_int CL_API_CALL clEnqueueNativeKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueNativeKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    void (CL_CALLBACK* user_func)(void*),
+    void* args,
+    size_t cb_args,
+    cl_uint num_mem_objects,
+    const cl_mem* mem_list,
+    const void** args_mem_loc,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueNativeKernel(
+            command_queue,
+            user_func,
+            args,
+            cb_args,
+            num_mem_objects,
+            mem_list,
+            args_mem_loc,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueNativeKernel(
+        command_queue,
+        user_func,
+        args,
+        cb_args,
+        num_mem_objects,
+        mem_list,
+        args_mem_loc,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
     cl_command_queue command_queue,
@@ -2511,6 +4572,15 @@ CL_API_ENTRY cl_int CL_API_CALL clSetCommandQueueProperty(
     cl_command_queue_properties* old_properties)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clSetCommandQueueProperty)->clSetCommandQueueProperty(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clSetCommandQueueProperty),
+            command_queue,
+            properties,
+            enable,
+            old_properties);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetCommandQueueProperty(
             command_queue,
@@ -2544,6 +4614,31 @@ static cl_int CL_API_CALL clSetCommandQueueProperty_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetCommandQueueProperty_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_command_queue_properties properties,
+    cl_bool enable,
+    cl_command_queue_properties* old_properties)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetCommandQueueProperty(
+            command_queue,
+            properties,
+            enable,
+            old_properties);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clSetCommandQueueProperty(
+        command_queue,
+        properties,
+        enable,
+        old_properties);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
     cl_context context,
@@ -2556,6 +4651,19 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage2D(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateImage2D)->clCreateImage2D(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateImage2D),
+            context,
+            flags,
+            image_format,
+            image_width,
+            image_height,
+            image_row_pitch,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage2D(
             context,
@@ -2605,6 +4713,43 @@ static cl_mem CL_API_CALL clCreateImage2D_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage2D_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    size_t image_width,
+    size_t image_height,
+    size_t image_row_pitch,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateImage2D(
+            context,
+            flags,
+            image_format,
+            image_width,
+            image_height,
+            image_row_pitch,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateImage2D(
+        context,
+        flags,
+        image_format,
+        image_width,
+        image_height,
+        image_row_pitch,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
     cl_context context,
@@ -2619,6 +4764,21 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage3D(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateImage3D)->clCreateImage3D(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateImage3D),
+            context,
+            flags,
+            image_format,
+            image_width,
+            image_height,
+            image_depth,
+            image_row_pitch,
+            image_slice_pitch,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage3D(
             context,
@@ -2676,12 +4836,62 @@ static cl_mem CL_API_CALL clCreateImage3D_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage3D_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    size_t image_width,
+    size_t image_height,
+    size_t image_depth,
+    size_t image_row_pitch,
+    size_t image_slice_pitch,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateImage3D(
+            context,
+            flags,
+            image_format,
+            image_width,
+            image_height,
+            image_depth,
+            image_row_pitch,
+            image_slice_pitch,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateImage3D(
+        context,
+        flags,
+        image_format,
+        image_width,
+        image_height,
+        image_depth,
+        image_row_pitch,
+        image_slice_pitch,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarker(
     cl_command_queue command_queue,
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueMarker)->clEnqueueMarker(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueMarker),
+            command_queue,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMarker(
             command_queue,
@@ -2707,6 +4917,25 @@ static cl_int CL_API_CALL clEnqueueMarker_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMarker_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueMarker(
+            command_queue,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueMarker(
+        command_queue,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
     cl_command_queue command_queue,
@@ -2714,6 +4943,14 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWaitForEvents(
     const cl_event* event_list)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueWaitForEvents)->clEnqueueWaitForEvents(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueWaitForEvents),
+            command_queue,
+            num_events,
+            event_list);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWaitForEvents(
             command_queue,
@@ -2743,11 +4980,39 @@ static cl_int CL_API_CALL clEnqueueWaitForEvents_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWaitForEvents_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_events,
+    const cl_event* event_list)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueWaitForEvents(
+            command_queue,
+            num_events,
+            event_list);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueWaitForEvents(
+        command_queue,
+        num_events,
+        event_list);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrier(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueBarrier)->clEnqueueBarrier(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueBarrier),
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueBarrier(
             command_queue);
@@ -2769,11 +5034,29 @@ static cl_int CL_API_CALL clEnqueueBarrier_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueBarrier_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueBarrier(
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueBarrier(
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadCompiler(
     void )
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clUnloadCompiler(
             );
@@ -2805,6 +5088,15 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueue(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateCommandQueue)->clCreateCommandQueue(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateCommandQueue),
+            context,
+            device,
+            properties,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateCommandQueue(
             context,
@@ -2838,6 +5130,31 @@ static cl_command_queue CL_API_CALL clCreateCommandQueue_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_command_queue CL_API_CALL clCreateCommandQueue_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_device_id device,
+    cl_command_queue_properties properties,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateCommandQueue(
+            context,
+            device,
+            properties,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateCommandQueue(
+        context,
+        device,
+        properties,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
     cl_context context,
@@ -2847,6 +5164,16 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSampler(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateSampler)->clCreateSampler(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateSampler),
+            context,
+            normalized_coords,
+            addressing_mode,
+            filter_mode,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSampler(
             context,
@@ -2884,6 +5211,34 @@ static cl_sampler CL_API_CALL clCreateSampler_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_sampler CL_API_CALL clCreateSampler_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_bool normalized_coords,
+    cl_addressing_mode addressing_mode,
+    cl_filter_mode filter_mode,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateSampler(
+            context,
+            normalized_coords,
+            addressing_mode,
+            filter_mode,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateSampler(
+        context,
+        normalized_coords,
+        addressing_mode,
+        filter_mode,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
     cl_command_queue command_queue,
@@ -2893,6 +5248,16 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueTask(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueTask)->clEnqueueTask(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueTask),
+            command_queue,
+            kernel,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueTask(
             command_queue,
@@ -2930,6 +5295,34 @@ static cl_int CL_API_CALL clEnqueueTask_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueTask_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_kernel kernel,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueTask(
+            command_queue,
+            kernel,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueTask(
+        command_queue,
+        kernel,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
     cl_mem buffer,
@@ -2939,6 +5332,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateSubBuffer(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(buffer))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(buffer, clCreateSubBuffer)->clCreateSubBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(buffer, clCreateSubBuffer),
+            buffer,
+            flags,
+            buffer_create_type,
+            buffer_create_info,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubBuffer(
             buffer,
@@ -2976,6 +5379,34 @@ static cl_mem CL_API_CALL clCreateSubBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateSubBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem buffer,
+    cl_mem_flags flags,
+    cl_buffer_create_type buffer_create_type,
+    const void* buffer_create_info,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateSubBuffer(
+            buffer,
+            flags,
+            buffer_create_type,
+            buffer_create_info,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(buffer, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(buffer)->clCreateSubBuffer(
+        buffer,
+        flags,
+        buffer_create_type,
+        buffer_create_info,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
     cl_mem memobj,
@@ -2983,6 +5414,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetMemObjectDestructorCallback(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clSetMemObjectDestructorCallback)->clSetMemObjectDestructorCallback(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clSetMemObjectDestructorCallback),
+            memobj,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetMemObjectDestructorCallback(
             memobj,
@@ -3012,12 +5451,41 @@ static cl_int CL_API_CALL clSetMemObjectDestructorCallback_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetMemObjectDestructorCallback_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj,
+    void (CL_CALLBACK* pfn_notify)(cl_mem memobj, void* user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetMemObjectDestructorCallback(
+            memobj,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(memobj)->clSetMemObjectDestructorCallback(
+        memobj,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_event CL_API_CALL clCreateUserEvent(
     cl_context context,
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateUserEvent)->clCreateUserEvent(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateUserEvent),
+            context,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateUserEvent(
             context,
@@ -3043,12 +5511,38 @@ static cl_event CL_API_CALL clCreateUserEvent_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateUserEvent_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateUserEvent(
+            context,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateUserEvent(
+        context,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetUserEventStatus(
     cl_event event,
     cl_int execution_status)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clSetUserEventStatus)->clSetUserEventStatus(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clSetUserEventStatus),
+            event,
+            execution_status);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetUserEventStatus(
             event,
@@ -3074,6 +5568,25 @@ static cl_int CL_API_CALL clSetUserEventStatus_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetUserEventStatus_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event,
+    cl_int execution_status)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetUserEventStatus(
+            event,
+            execution_status);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clSetUserEventStatus(
+        event,
+        execution_status);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
     cl_event event,
@@ -3082,6 +5595,15 @@ CL_API_ENTRY cl_int CL_API_CALL clSetEventCallback(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(event))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(event, clSetEventCallback)->clSetEventCallback(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(event, clSetEventCallback),
+            event,
+            command_exec_callback_type,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetEventCallback(
             event,
@@ -3115,6 +5637,31 @@ static cl_int CL_API_CALL clSetEventCallback_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetEventCallback_inst(
+    const cl_icd_instance_layer *layer,
+    cl_event event,
+    cl_int command_exec_callback_type,
+    void (CL_CALLBACK* pfn_notify)(cl_event event, cl_int event_command_status, void *user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetEventCallback(
+            event,
+            command_exec_callback_type,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(event, CL_INVALID_EVENT);
+    return KHR_ICD2_DISPATCH(event)->clSetEventCallback(
+        event,
+        command_exec_callback_type,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
     cl_command_queue command_queue,
@@ -3133,6 +5680,25 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReadBufferRect(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReadBufferRect)->clEnqueueReadBufferRect(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReadBufferRect),
+            command_queue,
+            buffer,
+            blocking_read,
+            buffer_origin,
+            host_origin,
+            region,
+            buffer_row_pitch,
+            buffer_slice_pitch,
+            host_row_pitch,
+            host_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReadBufferRect(
             command_queue,
@@ -3206,6 +5772,61 @@ static cl_int CL_API_CALL clEnqueueReadBufferRect_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReadBufferRect_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_read,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
+    const size_t* region,
+    size_t buffer_row_pitch,
+    size_t buffer_slice_pitch,
+    size_t host_row_pitch,
+    size_t host_slice_pitch,
+    void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReadBufferRect(
+            command_queue,
+            buffer,
+            blocking_read,
+            buffer_origin,
+            host_origin,
+            region,
+            buffer_row_pitch,
+            buffer_slice_pitch,
+            host_row_pitch,
+            host_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReadBufferRect(
+        command_queue,
+        buffer,
+        blocking_read,
+        buffer_origin,
+        host_origin,
+        region,
+        buffer_row_pitch,
+        buffer_slice_pitch,
+        host_row_pitch,
+        host_slice_pitch,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
     cl_command_queue command_queue,
@@ -3224,6 +5845,25 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueWriteBufferRect(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueWriteBufferRect)->clEnqueueWriteBufferRect(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueWriteBufferRect),
+            command_queue,
+            buffer,
+            blocking_write,
+            buffer_origin,
+            host_origin,
+            region,
+            buffer_row_pitch,
+            buffer_slice_pitch,
+            host_row_pitch,
+            host_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueWriteBufferRect(
             command_queue,
@@ -3297,6 +5937,61 @@ static cl_int CL_API_CALL clEnqueueWriteBufferRect_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueWriteBufferRect_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    cl_bool blocking_write,
+    const size_t* buffer_origin,
+    const size_t* host_origin,
+    const size_t* region,
+    size_t buffer_row_pitch,
+    size_t buffer_slice_pitch,
+    size_t host_row_pitch,
+    size_t host_slice_pitch,
+    const void* ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueWriteBufferRect(
+            command_queue,
+            buffer,
+            blocking_write,
+            buffer_origin,
+            host_origin,
+            region,
+            buffer_row_pitch,
+            buffer_slice_pitch,
+            host_row_pitch,
+            host_slice_pitch,
+            ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueWriteBufferRect(
+        command_queue,
+        buffer,
+        blocking_write,
+        buffer_origin,
+        host_origin,
+        region,
+        buffer_row_pitch,
+        buffer_slice_pitch,
+        host_row_pitch,
+        host_slice_pitch,
+        ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
     cl_command_queue command_queue,
@@ -3314,6 +6009,24 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueCopyBufferRect(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueCopyBufferRect)->clEnqueueCopyBufferRect(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueCopyBufferRect),
+            command_queue,
+            src_buffer,
+            dst_buffer,
+            src_origin,
+            dst_origin,
+            region,
+            src_row_pitch,
+            src_slice_pitch,
+            dst_row_pitch,
+            dst_slice_pitch,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueCopyBufferRect(
             command_queue,
@@ -3383,6 +6096,58 @@ static cl_int CL_API_CALL clEnqueueCopyBufferRect_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueCopyBufferRect_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem src_buffer,
+    cl_mem dst_buffer,
+    const size_t* src_origin,
+    const size_t* dst_origin,
+    const size_t* region,
+    size_t src_row_pitch,
+    size_t src_slice_pitch,
+    size_t dst_row_pitch,
+    size_t dst_slice_pitch,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueCopyBufferRect(
+            command_queue,
+            src_buffer,
+            dst_buffer,
+            src_origin,
+            dst_origin,
+            region,
+            src_row_pitch,
+            src_slice_pitch,
+            dst_row_pitch,
+            dst_slice_pitch,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueCopyBufferRect(
+        command_queue,
+        src_buffer,
+        dst_buffer,
+        src_origin,
+        dst_origin,
+        region,
+        src_row_pitch,
+        src_slice_pitch,
+        dst_row_pitch,
+        dst_slice_pitch,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
     cl_device_id in_device,
@@ -3392,6 +6157,16 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevices(
     cl_uint* num_devices_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(in_device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(in_device, clCreateSubDevices)->clCreateSubDevices(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(in_device, clCreateSubDevices),
+            in_device,
+            properties,
+            num_devices,
+            out_devices,
+            num_devices_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubDevices(
             in_device,
@@ -3429,11 +6204,45 @@ static cl_int CL_API_CALL clCreateSubDevices_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateSubDevices_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id in_device,
+    const cl_device_partition_property* properties,
+    cl_uint num_devices,
+    cl_device_id* out_devices,
+    cl_uint* num_devices_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateSubDevices(
+            in_device,
+            properties,
+            num_devices,
+            out_devices,
+            num_devices_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(in_device)->clCreateSubDevices(
+        in_device,
+        properties,
+        num_devices,
+        out_devices,
+        num_devices_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDevice(
     cl_device_id device)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clRetainDevice)->clRetainDevice(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clRetainDevice),
+            device);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainDevice(
             device);
@@ -3455,11 +6264,33 @@ static cl_int CL_API_CALL clRetainDevice_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainDevice_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainDevice(
+            device);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clRetainDevice(
+        device);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clReleaseDevice(
     cl_device_id device)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clReleaseDevice)->clReleaseDevice(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clReleaseDevice),
+            device);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseDevice(
             device);
@@ -3481,6 +6312,22 @@ static cl_int CL_API_CALL clReleaseDevice_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseDevice_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseDevice(
+            device);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clReleaseDevice(
+        device);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
     cl_context context,
@@ -3491,6 +6338,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImage(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateImage)->clCreateImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateImage),
+            context,
+            flags,
+            image_format,
+            image_desc,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImage(
             context,
@@ -3532,6 +6390,37 @@ static cl_mem CL_API_CALL clCreateImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    const cl_image_desc* image_desc,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateImage(
+            context,
+            flags,
+            image_format,
+            image_desc,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateImage(
+        context,
+        flags,
+        image_format,
+        image_desc,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
     cl_context context,
@@ -3541,6 +6430,16 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithBuiltInKernels(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateProgramWithBuiltInKernels)->clCreateProgramWithBuiltInKernels(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateProgramWithBuiltInKernels),
+            context,
+            num_devices,
+            device_list,
+            kernel_names,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithBuiltInKernels(
             context,
@@ -3578,6 +6477,34 @@ static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithBuiltInKernels_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* kernel_names,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateProgramWithBuiltInKernels(
+            context,
+            num_devices,
+            device_list,
+            kernel_names,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateProgramWithBuiltInKernels(
+        context,
+        num_devices,
+        device_list,
+        kernel_names,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
     cl_program program,
@@ -3591,6 +6518,20 @@ CL_API_ENTRY cl_int CL_API_CALL clCompileProgram(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clCompileProgram)->clCompileProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clCompileProgram),
+            program,
+            num_devices,
+            device_list,
+            options,
+            num_input_headers,
+            input_headers,
+            header_include_names,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCompileProgram(
             program,
@@ -3644,6 +6585,46 @@ static cl_int CL_API_CALL clCompileProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCompileProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    cl_uint num_input_headers,
+    const cl_program* input_headers,
+    const char** header_include_names,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCompileProgram(
+            program,
+            num_devices,
+            device_list,
+            options,
+            num_input_headers,
+            input_headers,
+            header_include_names,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clCompileProgram(
+        program,
+        num_devices,
+        device_list,
+        options,
+        num_input_headers,
+        input_headers,
+        header_include_names,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
     cl_context context,
@@ -3657,6 +6638,20 @@ CL_API_ENTRY cl_program CL_API_CALL clLinkProgram(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clLinkProgram)->clLinkProgram(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clLinkProgram),
+            context,
+            num_devices,
+            device_list,
+            options,
+            num_input_programs,
+            input_programs,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clLinkProgram(
             context,
@@ -3710,11 +6705,57 @@ static cl_program CL_API_CALL clLinkProgram_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clLinkProgram_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_uint num_devices,
+    const cl_device_id* device_list,
+    const char* options,
+    cl_uint num_input_programs,
+    const cl_program* input_programs,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clLinkProgram(
+            context,
+            num_devices,
+            device_list,
+            options,
+            num_input_programs,
+            input_programs,
+            pfn_notify,
+            user_data,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clLinkProgram(
+        context,
+        num_devices,
+        device_list,
+        options,
+        num_input_programs,
+        input_programs,
+        pfn_notify,
+        user_data,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clUnloadPlatformCompiler(
     cl_platform_id platform)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clUnloadPlatformCompiler)->clUnloadPlatformCompiler(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clUnloadPlatformCompiler),
+            platform);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clUnloadPlatformCompiler(
             platform);
@@ -3736,6 +6777,22 @@ static cl_int CL_API_CALL clUnloadPlatformCompiler_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clUnloadPlatformCompiler_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clUnloadPlatformCompiler(
+            platform);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    return KHR_ICD2_DISPATCH(platform)->clUnloadPlatformCompiler(
+        platform);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     cl_kernel kernel,
@@ -3746,6 +6803,17 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelArgInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clGetKernelArgInfo)->clGetKernelArgInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clGetKernelArgInfo),
+            kernel,
+            arg_index,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelArgInfo(
             kernel,
@@ -3787,6 +6855,37 @@ static cl_int CL_API_CALL clGetKernelArgInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelArgInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_uint arg_index,
+    cl_kernel_arg_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelArgInfo(
+            kernel,
+            arg_index,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clGetKernelArgInfo(
+        kernel,
+        arg_index,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
     cl_command_queue command_queue,
@@ -3800,6 +6899,20 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillBuffer(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueFillBuffer)->clEnqueueFillBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueFillBuffer),
+            command_queue,
+            buffer,
+            pattern,
+            pattern_size,
+            offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueFillBuffer(
             command_queue,
@@ -3853,6 +6966,46 @@ static cl_int CL_API_CALL clEnqueueFillBuffer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueFillBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem buffer,
+    const void* pattern,
+    size_t pattern_size,
+    size_t offset,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueFillBuffer(
+            command_queue,
+            buffer,
+            pattern,
+            pattern_size,
+            offset,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueFillBuffer(
+        command_queue,
+        buffer,
+        pattern,
+        pattern_size,
+        offset,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
     cl_command_queue command_queue,
@@ -3865,6 +7018,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueFillImage(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueFillImage)->clEnqueueFillImage(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueFillImage),
+            command_queue,
+            image,
+            fill_color,
+            origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueFillImage(
             command_queue,
@@ -3914,6 +7080,43 @@ static cl_int CL_API_CALL clEnqueueFillImage_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueFillImage_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_mem image,
+    const void* fill_color,
+    const size_t* origin,
+    const size_t* region,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueFillImage(
+            command_queue,
+            image,
+            fill_color,
+            origin,
+            region,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueFillImage(
+        command_queue,
+        image,
+        fill_color,
+        origin,
+        region,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
     cl_command_queue command_queue,
@@ -3925,6 +7128,18 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMigrateMemObjects(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueMigrateMemObjects)->clEnqueueMigrateMemObjects(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueMigrateMemObjects),
+            command_queue,
+            num_mem_objects,
+            mem_objects,
+            flags,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMigrateMemObjects(
             command_queue,
@@ -3970,6 +7185,40 @@ static cl_int CL_API_CALL clEnqueueMigrateMemObjects_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMigrateMemObjects_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_mem_objects,
+    const cl_mem* mem_objects,
+    cl_mem_migration_flags flags,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueMigrateMemObjects(
+            command_queue,
+            num_mem_objects,
+            mem_objects,
+            flags,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueMigrateMemObjects(
+        command_queue,
+        num_mem_objects,
+        mem_objects,
+        flags,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
     cl_command_queue command_queue,
@@ -3978,6 +7227,15 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueMarkerWithWaitList(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueMarkerWithWaitList)->clEnqueueMarkerWithWaitList(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueMarkerWithWaitList),
+            command_queue,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueMarkerWithWaitList(
             command_queue,
@@ -4011,6 +7269,31 @@ static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueMarkerWithWaitList_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueMarkerWithWaitList(
+            command_queue,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueMarkerWithWaitList(
+        command_queue,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
     cl_command_queue command_queue,
@@ -4019,6 +7302,15 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueBarrierWithWaitList(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueBarrierWithWaitList)->clEnqueueBarrierWithWaitList(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueBarrierWithWaitList),
+            command_queue,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueBarrierWithWaitList(
             command_queue,
@@ -4052,11 +7344,44 @@ static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueBarrierWithWaitList_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueBarrierWithWaitList(
+            command_queue,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueBarrierWithWaitList(
+        command_queue,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 #if defined(CL_ENABLE_LAYERS)
 extern void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_disp(
     cl_platform_id platform,
     const char* func_name) CL_API_SUFFIX__VERSION_1_2;
 #endif // defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+extern void* CL_API_CALL clGetExtensionFunctionAddressForPlatform_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    const char* func_name) CL_API_SUFFIX__VERSION_1_2;
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     cl_context context,
@@ -4065,6 +7390,15 @@ CL_API_ENTRY cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateCommandQueueWithProperties)->clCreateCommandQueueWithProperties(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateCommandQueueWithProperties),
+            context,
+            device,
+            properties,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateCommandQueueWithProperties(
             context,
@@ -4098,6 +7432,31 @@ static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_command_queue CL_API_CALL clCreateCommandQueueWithProperties_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_device_id device,
+    const cl_queue_properties* properties,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateCommandQueueWithProperties(
+            context,
+            device,
+            properties,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateCommandQueueWithProperties(
+        context,
+        device,
+        properties,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
     cl_context context,
@@ -4108,6 +7467,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreatePipe(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreatePipe)->clCreatePipe(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreatePipe),
+            context,
+            flags,
+            pipe_packet_size,
+            pipe_max_packets,
+            properties,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreatePipe(
             context,
@@ -4149,6 +7519,37 @@ static cl_mem CL_API_CALL clCreatePipe_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreatePipe_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_uint pipe_packet_size,
+    cl_uint pipe_max_packets,
+    const cl_pipe_properties* properties,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreatePipe(
+            context,
+            flags,
+            pipe_packet_size,
+            pipe_max_packets,
+            properties,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreatePipe(
+        context,
+        flags,
+        pipe_packet_size,
+        pipe_max_packets,
+        properties,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
     cl_mem pipe,
@@ -4158,6 +7559,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetPipeInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(pipe))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(pipe, clGetPipeInfo)->clGetPipeInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(pipe, clGetPipeInfo),
+            pipe,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetPipeInfo(
             pipe,
@@ -4195,6 +7606,34 @@ static cl_int CL_API_CALL clGetPipeInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetPipeInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem pipe,
+    cl_pipe_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetPipeInfo(
+            pipe,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(pipe, CL_INVALID_MEM_OBJECT);
+    return KHR_ICD2_DISPATCH(pipe)->clGetPipeInfo(
+        pipe,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
     cl_context context,
@@ -4203,6 +7642,15 @@ CL_API_ENTRY void* CL_API_CALL clSVMAlloc(
     cl_uint alignment)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clSVMAlloc)->clSVMAlloc(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clSVMAlloc),
+            context,
+            flags,
+            size,
+            alignment);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSVMAlloc(
             context,
@@ -4236,12 +7684,47 @@ static void* CL_API_CALL clSVMAlloc_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static void* CL_API_CALL clSVMAlloc_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_svm_mem_flags flags,
+    size_t size,
+    cl_uint alignment)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSVMAlloc(
+            context,
+            flags,
+            size,
+            alignment);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, NULL);
+    return KHR_ICD2_DISPATCH(context)->clSVMAlloc(
+        context,
+        flags,
+        size,
+        alignment);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY void CL_API_CALL clSVMFree(
     cl_context context,
     void* svm_pointer)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+    {
+        KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clSVMFree)->clSVMFree(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clSVMFree),
+            context,
+            svm_pointer);
+    }
+    else
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
     {
         khrFirstLayer->dispatch.clSVMFree(
@@ -4270,6 +7753,28 @@ static void CL_API_CALL clSVMFree_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static void CL_API_CALL clSVMFree_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    void* svm_pointer)
+{
+    (void)layer;
+    if (khrFirstLayer)
+    {
+        khrFirstLayer->dispatch.clSVMFree(
+            context,
+            svm_pointer);
+    }
+    else
+    if (context != NULL)
+    KHR_ICD2_DISPATCH(context)->clSVMFree(
+        context,
+        svm_pointer);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
     cl_context context,
@@ -4277,6 +7782,14 @@ CL_API_ENTRY cl_sampler CL_API_CALL clCreateSamplerWithProperties(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateSamplerWithProperties)->clCreateSamplerWithProperties(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateSamplerWithProperties),
+            context,
+            sampler_properties,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSamplerWithProperties(
             context,
@@ -4306,6 +7819,28 @@ static cl_sampler CL_API_CALL clCreateSamplerWithProperties_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_sampler CL_API_CALL clCreateSamplerWithProperties_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    const cl_sampler_properties* sampler_properties,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateSamplerWithProperties(
+            context,
+            sampler_properties,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateSamplerWithProperties(
+        context,
+        sampler_properties,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
     cl_kernel kernel,
@@ -4313,6 +7848,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelArgSVMPointer(
     const void* arg_value)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clSetKernelArgSVMPointer)->clSetKernelArgSVMPointer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clSetKernelArgSVMPointer),
+            kernel,
+            arg_index,
+            arg_value);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelArgSVMPointer(
             kernel,
@@ -4342,6 +7885,28 @@ static cl_int CL_API_CALL clSetKernelArgSVMPointer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelArgSVMPointer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_uint arg_index,
+    const void* arg_value)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetKernelArgSVMPointer(
+            kernel,
+            arg_index,
+            arg_value);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clSetKernelArgSVMPointer(
+        kernel,
+        arg_index,
+        arg_value);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
     cl_kernel kernel,
@@ -4350,6 +7915,15 @@ CL_API_ENTRY cl_int CL_API_CALL clSetKernelExecInfo(
     const void* param_value)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clSetKernelExecInfo)->clSetKernelExecInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clSetKernelExecInfo),
+            kernel,
+            param_name,
+            param_value_size,
+            param_value);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetKernelExecInfo(
             kernel,
@@ -4383,6 +7957,31 @@ static cl_int CL_API_CALL clSetKernelExecInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetKernelExecInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_kernel_exec_info param_name,
+    size_t param_value_size,
+    const void* param_value)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetKernelExecInfo(
+            kernel,
+            param_name,
+            param_value_size,
+            param_value);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clSetKernelExecInfo(
+        kernel,
+        param_name,
+        param_value_size,
+        param_value);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
     cl_command_queue command_queue,
@@ -4395,6 +7994,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMFree(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMFree)->clEnqueueSVMFree(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMFree),
+            command_queue,
+            num_svm_pointers,
+            svm_pointers,
+            pfn_free_func,
+            user_data,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMFree(
             command_queue,
@@ -4444,6 +8056,43 @@ static cl_int CL_API_CALL clEnqueueSVMFree_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMFree_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_svm_pointers,
+    void* svm_pointers[],
+    void (CL_CALLBACK* pfn_free_func)(cl_command_queue queue, cl_uint num_svm_pointers, void* svm_pointers[], void* user_data),
+    void* user_data,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMFree(
+            command_queue,
+            num_svm_pointers,
+            svm_pointers,
+            pfn_free_func,
+            user_data,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMFree(
+        command_queue,
+        num_svm_pointers,
+        svm_pointers,
+        pfn_free_func,
+        user_data,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
     cl_command_queue command_queue,
@@ -4456,6 +8105,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemcpy(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMMemcpy)->clEnqueueSVMMemcpy(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMMemcpy),
+            command_queue,
+            blocking_copy,
+            dst_ptr,
+            src_ptr,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMemcpy(
             command_queue,
@@ -4505,6 +8167,43 @@ static cl_int CL_API_CALL clEnqueueSVMMemcpy_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMemcpy_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_bool blocking_copy,
+    void* dst_ptr,
+    const void* src_ptr,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMMemcpy(
+            command_queue,
+            blocking_copy,
+            dst_ptr,
+            src_ptr,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMMemcpy(
+        command_queue,
+        blocking_copy,
+        dst_ptr,
+        src_ptr,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
     cl_command_queue command_queue,
@@ -4517,6 +8216,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMemFill(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMMemFill)->clEnqueueSVMMemFill(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMMemFill),
+            command_queue,
+            svm_ptr,
+            pattern,
+            pattern_size,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMemFill(
             command_queue,
@@ -4566,6 +8278,43 @@ static cl_int CL_API_CALL clEnqueueSVMMemFill_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMemFill_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    void* svm_ptr,
+    const void* pattern,
+    size_t pattern_size,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMMemFill(
+            command_queue,
+            svm_ptr,
+            pattern,
+            pattern_size,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMMemFill(
+        command_queue,
+        svm_ptr,
+        pattern,
+        pattern_size,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
     cl_command_queue command_queue,
@@ -4578,6 +8327,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMap(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMMap)->clEnqueueSVMMap(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMMap),
+            command_queue,
+            blocking_map,
+            flags,
+            svm_ptr,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMap(
             command_queue,
@@ -4627,6 +8389,43 @@ static cl_int CL_API_CALL clEnqueueSVMMap_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMap_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_bool blocking_map,
+    cl_map_flags flags,
+    void* svm_ptr,
+    size_t size,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMMap(
+            command_queue,
+            blocking_map,
+            flags,
+            svm_ptr,
+            size,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMMap(
+        command_queue,
+        blocking_map,
+        flags,
+        svm_ptr,
+        size,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
     cl_command_queue command_queue,
@@ -4636,6 +8435,16 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMUnmap(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMUnmap)->clEnqueueSVMUnmap(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMUnmap),
+            command_queue,
+            svm_ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMUnmap(
             command_queue,
@@ -4673,6 +8482,34 @@ static cl_int CL_API_CALL clEnqueueSVMUnmap_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMUnmap_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    void* svm_ptr,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMUnmap(
+            command_queue,
+            svm_ptr,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMUnmap(
+        command_queue,
+        svm_ptr,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
     cl_context context,
@@ -4680,6 +8517,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetDefaultDeviceCommandQueue(
     cl_command_queue command_queue)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clSetDefaultDeviceCommandQueue)->clSetDefaultDeviceCommandQueue(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clSetDefaultDeviceCommandQueue),
+            context,
+            device,
+            command_queue);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetDefaultDeviceCommandQueue(
             context,
@@ -4709,6 +8554,28 @@ static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetDefaultDeviceCommandQueue_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_device_id device,
+    cl_command_queue command_queue)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetDefaultDeviceCommandQueue(
+            context,
+            device,
+            command_queue);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clSetDefaultDeviceCommandQueue(
+        context,
+        device,
+        command_queue);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
     cl_device_id device,
@@ -4716,6 +8583,14 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceAndHostTimer(
     cl_ulong* host_timestamp)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clGetDeviceAndHostTimer)->clGetDeviceAndHostTimer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clGetDeviceAndHostTimer),
+            device,
+            device_timestamp,
+            host_timestamp);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceAndHostTimer(
             device,
@@ -4745,12 +8620,41 @@ static cl_int CL_API_CALL clGetDeviceAndHostTimer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceAndHostTimer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device,
+    cl_ulong* device_timestamp,
+    cl_ulong* host_timestamp)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceAndHostTimer(
+            device,
+            device_timestamp,
+            host_timestamp);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clGetDeviceAndHostTimer(
+        device,
+        device_timestamp,
+        host_timestamp);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetHostTimer(
     cl_device_id device,
     cl_ulong* host_timestamp)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clGetHostTimer)->clGetHostTimer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clGetHostTimer),
+            device,
+            host_timestamp);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetHostTimer(
             device,
@@ -4776,6 +8680,25 @@ static cl_int CL_API_CALL clGetHostTimer_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetHostTimer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device,
+    cl_ulong* host_timestamp)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetHostTimer(
+            device,
+            host_timestamp);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    return KHR_ICD2_DISPATCH(device)->clGetHostTimer(
+        device,
+        host_timestamp);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
     cl_context context,
@@ -4784,6 +8707,15 @@ CL_API_ENTRY cl_program CL_API_CALL clCreateProgramWithIL(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateProgramWithIL)->clCreateProgramWithIL(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateProgramWithIL),
+            context,
+            il,
+            length,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateProgramWithIL(
             context,
@@ -4817,12 +8749,44 @@ static cl_program CL_API_CALL clCreateProgramWithIL_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_program CL_API_CALL clCreateProgramWithIL_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    const void* il,
+    size_t length,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateProgramWithIL(
+            context,
+            il,
+            length,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateProgramWithIL(
+        context,
+        il,
+        length,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_kernel CL_API_CALL clCloneKernel(
     cl_kernel source_kernel,
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(source_kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(source_kernel, clCloneKernel)->clCloneKernel(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(source_kernel, clCloneKernel),
+            source_kernel,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCloneKernel(
             source_kernel,
@@ -4848,6 +8812,25 @@ static cl_kernel CL_API_CALL clCloneKernel_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_kernel CL_API_CALL clCloneKernel_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel source_kernel,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCloneKernel(
+            source_kernel,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(source_kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(source_kernel)->clCloneKernel(
+        source_kernel,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
     cl_kernel kernel,
@@ -4860,6 +8843,19 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(kernel, clGetKernelSubGroupInfo)->clGetKernelSubGroupInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(kernel, clGetKernelSubGroupInfo),
+            kernel,
+            device,
+            param_name,
+            input_value_size,
+            input_value,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelSubGroupInfo(
             kernel,
@@ -4909,6 +8905,43 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfo_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSubGroupInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel kernel,
+    cl_device_id device,
+    cl_kernel_sub_group_info param_name,
+    size_t input_value_size,
+    const void* input_value,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelSubGroupInfo(
+            kernel,
+            device,
+            param_name,
+            input_value_size,
+            input_value,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(kernel, CL_INVALID_KERNEL);
+    return KHR_ICD2_DISPATCH(kernel)->clGetKernelSubGroupInfo(
+        kernel,
+        device,
+        param_name,
+        input_value_size,
+        input_value,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
     cl_command_queue command_queue,
@@ -4921,6 +8954,19 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueSVMMigrateMem(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueSVMMigrateMem)->clEnqueueSVMMigrateMem(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueSVMMigrateMem),
+            command_queue,
+            num_svm_pointers,
+            svm_pointers,
+            sizes,
+            flags,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueSVMMigrateMem(
             command_queue,
@@ -4970,6 +9016,43 @@ static cl_int CL_API_CALL clEnqueueSVMMigrateMem_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueSVMMigrateMem_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_svm_pointers,
+    const void** svm_pointers,
+    const size_t* sizes,
+    cl_mem_migration_flags flags,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueSVMMigrateMem(
+            command_queue,
+            num_svm_pointers,
+            svm_pointers,
+            sizes,
+            flags,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueSVMMigrateMem(
+        command_queue,
+        num_svm_pointers,
+        svm_pointers,
+        sizes,
+        flags,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
     cl_program program,
@@ -4978,6 +9061,15 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramSpecializationConstant(
     const void* spec_value)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clSetProgramSpecializationConstant)->clSetProgramSpecializationConstant(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clSetProgramSpecializationConstant),
+            program,
+            spec_id,
+            spec_size,
+            spec_value);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetProgramSpecializationConstant(
             program,
@@ -5011,6 +9103,31 @@ static cl_int CL_API_CALL clSetProgramSpecializationConstant_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetProgramSpecializationConstant_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    cl_uint spec_id,
+    size_t spec_size,
+    const void* spec_value)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetProgramSpecializationConstant(
+            program,
+            spec_id,
+            spec_size,
+            spec_value);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clSetProgramSpecializationConstant(
+        program,
+        spec_id,
+        spec_size,
+        spec_value);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
     cl_program program,
@@ -5018,6 +9135,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetProgramReleaseCallback(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(program))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(program, clSetProgramReleaseCallback)->clSetProgramReleaseCallback(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(program, clSetProgramReleaseCallback),
+            program,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetProgramReleaseCallback(
             program,
@@ -5047,6 +9172,28 @@ static cl_int CL_API_CALL clSetProgramReleaseCallback_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetProgramReleaseCallback_inst(
+    const cl_icd_instance_layer *layer,
+    cl_program program,
+    void (CL_CALLBACK* pfn_notify)(cl_program program, void* user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetProgramReleaseCallback(
+            program,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(program, CL_INVALID_PROGRAM);
+    return KHR_ICD2_DISPATCH(program)->clSetProgramReleaseCallback(
+        program,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
     cl_context context,
@@ -5054,6 +9201,14 @@ CL_API_ENTRY cl_int CL_API_CALL clSetContextDestructorCallback(
     void* user_data)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clSetContextDestructorCallback)->clSetContextDestructorCallback(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clSetContextDestructorCallback),
+            context,
+            pfn_notify,
+            user_data);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clSetContextDestructorCallback(
             context,
@@ -5083,6 +9238,28 @@ static cl_int CL_API_CALL clSetContextDestructorCallback_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clSetContextDestructorCallback_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    void (CL_CALLBACK* pfn_notify)(cl_context context, void* user_data),
+    void* user_data)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clSetContextDestructorCallback(
+            context,
+            pfn_notify,
+            user_data);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clSetContextDestructorCallback(
+        context,
+        pfn_notify,
+        user_data);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     cl_context context,
@@ -5093,6 +9270,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateBufferWithProperties(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateBufferWithProperties)->clCreateBufferWithProperties(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateBufferWithProperties),
+            context,
+            properties,
+            flags,
+            size,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateBufferWithProperties(
             context,
@@ -5134,6 +9322,37 @@ static cl_mem CL_API_CALL clCreateBufferWithProperties_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateBufferWithProperties_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    const cl_mem_properties* properties,
+    cl_mem_flags flags,
+    size_t size,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateBufferWithProperties(
+            context,
+            properties,
+            flags,
+            size,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateBufferWithProperties(
+        context,
+        properties,
+        flags,
+        size,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
     cl_context context,
@@ -5145,6 +9364,18 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateImageWithProperties(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateImageWithProperties)->clCreateImageWithProperties(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateImageWithProperties),
+            context,
+            properties,
+            flags,
+            image_format,
+            image_desc,
+            host_ptr,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateImageWithProperties(
             context,
@@ -5190,6 +9421,40 @@ static cl_mem CL_API_CALL clCreateImageWithProperties_disp(
 #endif // defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateImageWithProperties_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    const cl_mem_properties* properties,
+    cl_mem_flags flags,
+    const cl_image_format* image_format,
+    const cl_image_desc* image_desc,
+    void* host_ptr,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateImageWithProperties(
+            context,
+            properties,
+            flags,
+            image_format,
+            image_desc,
+            host_ptr,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    return KHR_ICD2_DISPATCH(context)->clCreateImageWithProperties(
+        context,
+        properties,
+        flags,
+        image_format,
+        image_desc,
+        host_ptr,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+
+///////////////////////////////////////////////////////////////////////////////
 
 // cl_ext_device_fission
 
@@ -5197,6 +9462,12 @@ CL_API_ENTRY cl_int CL_API_CALL clReleaseDeviceEXT(
     cl_device_id device)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clReleaseDeviceEXT)->clReleaseDeviceEXT(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clReleaseDeviceEXT),
+            device);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clReleaseDeviceEXT(
             device);
@@ -5216,11 +9487,32 @@ static cl_int CL_API_CALL clReleaseDeviceEXT_disp(
         device);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clReleaseDeviceEXT_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clReleaseDeviceEXT(
+            device);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(device)->clReleaseDeviceEXT);
+    return KHR_ICD2_DISPATCH(device)->clReleaseDeviceEXT(
+        device);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clRetainDeviceEXT(
     cl_device_id device)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(device, clRetainDeviceEXT)->clRetainDeviceEXT(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(device, clRetainDeviceEXT),
+            device);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clRetainDeviceEXT(
             device);
@@ -5240,6 +9532,21 @@ static cl_int CL_API_CALL clRetainDeviceEXT_disp(
         device);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clRetainDeviceEXT_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id device)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clRetainDeviceEXT(
+            device);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(device)->clRetainDeviceEXT);
+    return KHR_ICD2_DISPATCH(device)->clRetainDeviceEXT(
+        device);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     cl_device_id in_device,
@@ -5249,6 +9556,16 @@ CL_API_ENTRY cl_int CL_API_CALL clCreateSubDevicesEXT(
     cl_uint* num_devices)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(in_device))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(in_device, clCreateSubDevicesEXT)->clCreateSubDevicesEXT(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(in_device, clCreateSubDevicesEXT),
+            in_device,
+            properties,
+            num_entries,
+            out_devices,
+            num_devices);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateSubDevicesEXT(
             in_device,
@@ -5284,6 +9601,33 @@ static cl_int CL_API_CALL clCreateSubDevicesEXT_disp(
         num_devices);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clCreateSubDevicesEXT_inst(
+    const cl_icd_instance_layer *layer,
+    cl_device_id in_device,
+    const cl_device_partition_property_ext* properties,
+    cl_uint num_entries,
+    cl_device_id* out_devices,
+    cl_uint* num_devices)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateSubDevicesEXT(
+            in_device,
+            properties,
+            num_entries,
+            out_devices,
+            num_devices);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_device, CL_INVALID_DEVICE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(in_device)->clCreateSubDevicesEXT);
+    return KHR_ICD2_DISPATCH(in_device)->clCreateSubDevicesEXT(
+        in_device,
+        properties,
+        num_entries,
+        out_devices,
+        num_devices);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -5301,6 +9645,18 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR(
     cl_uint* num_devices)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetDeviceIDsFromD3D10KHR)->clGetDeviceIDsFromD3D10KHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetDeviceIDsFromD3D10KHR),
+            platform,
+            d3d_device_source,
+            d3d_object,
+            d3d_device_set,
+            num_entries,
+            devices,
+            num_devices);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D10KHR(
             platform,
@@ -5344,6 +9700,39 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_disp(
         num_devices);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D10KHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    cl_d3d10_device_source_khr d3d_device_source,
+    void* d3d_object,
+    cl_d3d10_device_set_khr d3d_device_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D10KHR(
+            platform,
+            d3d_device_source,
+            d3d_object,
+            d3d_device_set,
+            num_entries,
+            devices,
+            num_devices);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromD3D10KHR);
+    return KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromD3D10KHR(
+        platform,
+        d3d_device_source,
+        d3d_object,
+        d3d_device_set,
+        num_entries,
+        devices,
+        num_devices);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     cl_context context,
@@ -5352,6 +9741,15 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10BufferKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D10BufferKHR)->clCreateFromD3D10BufferKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D10BufferKHR),
+            context,
+            flags,
+            resource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10BufferKHR(
             context,
@@ -5383,6 +9781,30 @@ static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10BufferKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Buffer* resource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D10BufferKHR(
+            context,
+            flags,
+            resource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D10BufferKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D10BufferKHR(
+        context,
+        flags,
+        resource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     cl_context context,
@@ -5392,6 +9814,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D10Texture2DKHR)->clCreateFromD3D10Texture2DKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D10Texture2DKHR),
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10Texture2DKHR(
             context,
@@ -5427,6 +9859,33 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10Texture2DKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Texture2D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D10Texture2DKHR(
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D10Texture2DKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D10Texture2DKHR(
+        context,
+        flags,
+        resource,
+        subresource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     cl_context context,
@@ -5436,6 +9895,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D10Texture3DKHR)->clCreateFromD3D10Texture3DKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D10Texture3DKHR),
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D10Texture3DKHR(
             context,
@@ -5471,6 +9940,33 @@ static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D10Texture3DKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D10Texture3D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D10Texture3DKHR(
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D10Texture3DKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D10Texture3DKHR(
+        context,
+        flags,
+        resource,
+        subresource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -5481,6 +9977,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueAcquireD3D10ObjectsKHR)->clEnqueueAcquireD3D10ObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueAcquireD3D10ObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireD3D10ObjectsKHR(
             command_queue,
@@ -5520,6 +10027,36 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireD3D10ObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueAcquireD3D10ObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireD3D10ObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireD3D10ObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     cl_command_queue command_queue,
@@ -5530,6 +10067,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReleaseD3D10ObjectsKHR)->clEnqueueReleaseD3D10ObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReleaseD3D10ObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseD3D10ObjectsKHR(
             command_queue,
@@ -5569,6 +10117,36 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseD3D10ObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReleaseD3D10ObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseD3D10ObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseD3D10ObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -5588,6 +10166,18 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR(
     cl_uint* num_devices)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetDeviceIDsFromD3D11KHR)->clGetDeviceIDsFromD3D11KHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetDeviceIDsFromD3D11KHR),
+            platform,
+            d3d_device_source,
+            d3d_object,
+            d3d_device_set,
+            num_entries,
+            devices,
+            num_devices);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D11KHR(
             platform,
@@ -5631,6 +10221,39 @@ static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_disp(
         num_devices);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromD3D11KHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    cl_d3d11_device_source_khr d3d_device_source,
+    void* d3d_object,
+    cl_d3d11_device_set_khr d3d_device_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceIDsFromD3D11KHR(
+            platform,
+            d3d_device_source,
+            d3d_object,
+            d3d_device_set,
+            num_entries,
+            devices,
+            num_devices);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromD3D11KHR);
+    return KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromD3D11KHR(
+        platform,
+        d3d_device_source,
+        d3d_object,
+        d3d_device_set,
+        num_entries,
+        devices,
+        num_devices);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     cl_context context,
@@ -5639,6 +10262,15 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11BufferKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D11BufferKHR)->clCreateFromD3D11BufferKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D11BufferKHR),
+            context,
+            flags,
+            resource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11BufferKHR(
             context,
@@ -5670,6 +10302,30 @@ static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11BufferKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Buffer* resource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D11BufferKHR(
+            context,
+            flags,
+            resource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D11BufferKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D11BufferKHR(
+        context,
+        flags,
+        resource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     cl_context context,
@@ -5679,6 +10335,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D11Texture2DKHR)->clCreateFromD3D11Texture2DKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D11Texture2DKHR),
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11Texture2DKHR(
             context,
@@ -5714,6 +10380,33 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11Texture2DKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Texture2D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D11Texture2DKHR(
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D11Texture2DKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D11Texture2DKHR(
+        context,
+        flags,
+        resource,
+        subresource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     cl_context context,
@@ -5723,6 +10416,16 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromD3D11Texture3DKHR)->clCreateFromD3D11Texture3DKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromD3D11Texture3DKHR),
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromD3D11Texture3DKHR(
             context,
@@ -5758,6 +10461,33 @@ static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromD3D11Texture3DKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    ID3D11Texture3D* resource,
+    UINT subresource,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromD3D11Texture3DKHR(
+            context,
+            flags,
+            resource,
+            subresource,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromD3D11Texture3DKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromD3D11Texture3DKHR(
+        context,
+        flags,
+        resource,
+        subresource,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5768,6 +10498,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueAcquireD3D11ObjectsKHR)->clEnqueueAcquireD3D11ObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueAcquireD3D11ObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireD3D11ObjectsKHR(
             command_queue,
@@ -5807,6 +10548,36 @@ static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireD3D11ObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueAcquireD3D11ObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireD3D11ObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireD3D11ObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     cl_command_queue command_queue,
@@ -5817,6 +10588,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReleaseD3D11ObjectsKHR)->clEnqueueReleaseD3D11ObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReleaseD3D11ObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseD3D11ObjectsKHR(
             command_queue,
@@ -5856,6 +10638,36 @@ static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseD3D11ObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReleaseD3D11ObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseD3D11ObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseD3D11ObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -5876,6 +10688,19 @@ CL_API_ENTRY cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR(
     cl_uint* num_devices)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetDeviceIDsFromDX9MediaAdapterKHR)->clGetDeviceIDsFromDX9MediaAdapterKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetDeviceIDsFromDX9MediaAdapterKHR),
+            platform,
+            num_media_adapters,
+            media_adapter_type,
+            media_adapters,
+            media_adapter_set,
+            num_entries,
+            devices,
+            num_devices);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetDeviceIDsFromDX9MediaAdapterKHR(
             platform,
@@ -5923,6 +10748,42 @@ static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_disp(
         num_devices);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetDeviceIDsFromDX9MediaAdapterKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_platform_id platform,
+    cl_uint num_media_adapters,
+    cl_dx9_media_adapter_type_khr* media_adapter_type,
+    void* media_adapters,
+    cl_dx9_media_adapter_set_khr media_adapter_set,
+    cl_uint num_entries,
+    cl_device_id* devices,
+    cl_uint* num_devices)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetDeviceIDsFromDX9MediaAdapterKHR(
+            platform,
+            num_media_adapters,
+            media_adapter_type,
+            media_adapters,
+            media_adapter_set,
+            num_entries,
+            devices,
+            num_devices);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromDX9MediaAdapterKHR);
+    return KHR_ICD2_DISPATCH(platform)->clGetDeviceIDsFromDX9MediaAdapterKHR(
+        platform,
+        num_media_adapters,
+        media_adapter_type,
+        media_adapters,
+        media_adapter_set,
+        num_entries,
+        devices,
+        num_devices);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_context context,
@@ -5933,6 +10794,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromDX9MediaSurfaceKHR)->clCreateFromDX9MediaSurfaceKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromDX9MediaSurfaceKHR),
+            context,
+            flags,
+            adapter_type,
+            surface_info,
+            plane,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromDX9MediaSurfaceKHR(
             context,
@@ -5972,6 +10844,36 @@ static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromDX9MediaSurfaceKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_dx9_media_adapter_type_khr adapter_type,
+    void* surface_info,
+    cl_uint plane,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromDX9MediaSurfaceKHR(
+            context,
+            flags,
+            adapter_type,
+            surface_info,
+            plane,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromDX9MediaSurfaceKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromDX9MediaSurfaceKHR(
+        context,
+        flags,
+        adapter_type,
+        surface_info,
+        plane,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -5982,6 +10884,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueAcquireDX9MediaSurfacesKHR)->clEnqueueAcquireDX9MediaSurfacesKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueAcquireDX9MediaSurfacesKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireDX9MediaSurfacesKHR(
             command_queue,
@@ -6021,6 +10934,36 @@ static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireDX9MediaSurfacesKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueAcquireDX9MediaSurfacesKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireDX9MediaSurfacesKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireDX9MediaSurfacesKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     cl_command_queue command_queue,
@@ -6031,6 +10974,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReleaseDX9MediaSurfacesKHR)->clEnqueueReleaseDX9MediaSurfacesKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReleaseDX9MediaSurfacesKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseDX9MediaSurfacesKHR(
             command_queue,
@@ -6070,6 +11024,36 @@ static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseDX9MediaSurfacesKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReleaseDX9MediaSurfacesKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseDX9MediaSurfacesKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseDX9MediaSurfacesKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 #endif // defined(_WIN32)
 
@@ -6084,6 +11068,15 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromEGLSyncKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateEventFromEGLSyncKHR)->clCreateEventFromEGLSyncKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateEventFromEGLSyncKHR),
+            context,
+            sync,
+            display,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateEventFromEGLSyncKHR(
             context,
@@ -6115,6 +11108,30 @@ static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateEventFromEGLSyncKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    CLeglSyncKHR sync,
+    CLeglDisplayKHR display,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateEventFromEGLSyncKHR(
+            context,
+            sync,
+            display,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateEventFromEGLSyncKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateEventFromEGLSyncKHR(
+        context,
+        sync,
+        display,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -6129,6 +11146,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromEGLImageKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromEGLImageKHR)->clCreateFromEGLImageKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromEGLImageKHR),
+            context,
+            egldisplay,
+            eglimage,
+            flags,
+            properties,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromEGLImageKHR(
             context,
@@ -6168,6 +11196,36 @@ static cl_mem CL_API_CALL clCreateFromEGLImageKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromEGLImageKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    CLeglDisplayKHR egldisplay,
+    CLeglImageKHR eglimage,
+    cl_mem_flags flags,
+    const cl_egl_image_properties_khr* properties,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromEGLImageKHR(
+            context,
+            egldisplay,
+            eglimage,
+            flags,
+            properties,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromEGLImageKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromEGLImageKHR(
+        context,
+        egldisplay,
+        eglimage,
+        flags,
+        properties,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -6178,6 +11236,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueAcquireEGLObjectsKHR)->clEnqueueAcquireEGLObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueAcquireEGLObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireEGLObjectsKHR(
             command_queue,
@@ -6217,6 +11286,36 @@ static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireEGLObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueAcquireEGLObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireEGLObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireEGLObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     cl_command_queue command_queue,
@@ -6227,6 +11326,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReleaseEGLObjectsKHR)->clEnqueueReleaseEGLObjectsKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReleaseEGLObjectsKHR),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseEGLObjectsKHR(
             command_queue,
@@ -6266,6 +11376,36 @@ static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseEGLObjectsKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReleaseEGLObjectsKHR(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseEGLObjectsKHR);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseEGLObjectsKHR(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -6277,6 +11417,14 @@ CL_API_ENTRY cl_event CL_API_CALL clCreateEventFromGLsyncKHR(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateEventFromGLsyncKHR)->clCreateEventFromGLsyncKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateEventFromGLsyncKHR),
+            context,
+            sync,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateEventFromGLsyncKHR(
             context,
@@ -6304,6 +11452,27 @@ static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_event CL_API_CALL clCreateEventFromGLsyncKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_GLsync sync,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateEventFromGLsyncKHR(
+            context,
+            sync,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateEventFromGLsyncKHR);
+    return KHR_ICD2_DISPATCH(context)->clCreateEventFromGLsyncKHR(
+        context,
+        sync,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -6316,7 +11485,19 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
     void* param_value,
     size_t* param_value_size_ret)
 {
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(platform))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(platform, clGetGLContextInfoKHR)->clGetGLContextInfoKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(platform, clGetGLContextInfoKHR),
+            properties,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLContextInfoKHR(
             properties,
@@ -6325,8 +11506,6 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLContextInfoKHR(
             param_value,
             param_value_size_ret);
 #endif // defined(CL_ENABLE_LAYERS)
-    cl_platform_id platform = NULL;
-    khrIcdContextPropertiesGetPlatform(properties, &platform);
     KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
     KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->clGetGLContextInfoKHR);
     return KHR_ICD2_DISPATCH(platform)->clGetGLContextInfoKHR(
@@ -6356,6 +11535,35 @@ static cl_int CL_API_CALL clGetGLContextInfoKHR_disp(
         param_value_size_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLContextInfoKHR_inst(
+    const cl_icd_instance_layer *layer,
+    const cl_context_properties* properties,
+    cl_gl_context_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    cl_platform_id platform = NULL;
+    khrIcdContextPropertiesGetPlatform(properties, &platform);
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetGLContextInfoKHR(
+            properties,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(platform, CL_INVALID_PLATFORM);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(platform)->clGetGLContextInfoKHR);
+    return KHR_ICD2_DISPATCH(platform)->clGetGLContextInfoKHR(
+        properties,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_context context,
@@ -6364,6 +11572,15 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLBuffer(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromGLBuffer)->clCreateFromGLBuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromGLBuffer),
+            context,
+            flags,
+            bufobj,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLBuffer(
             context,
@@ -6395,6 +11612,30 @@ static cl_mem CL_API_CALL clCreateFromGLBuffer_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLBuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLuint bufobj,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLBuffer(
+            context,
+            flags,
+            bufobj,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromGLBuffer);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromGLBuffer(
+        context,
+        flags,
+        bufobj,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_context context,
@@ -6405,6 +11646,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromGLTexture)->clCreateFromGLTexture(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromGLTexture),
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture(
             context,
@@ -6444,6 +11696,36 @@ static cl_mem CL_API_CALL clCreateFromGLTexture_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLTexture(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_context context,
@@ -6452,6 +11734,15 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLRenderbuffer(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromGLRenderbuffer)->clCreateFromGLRenderbuffer(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromGLRenderbuffer),
+            context,
+            flags,
+            renderbuffer,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLRenderbuffer(
             context,
@@ -6483,6 +11774,30 @@ static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLRenderbuffer_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLuint renderbuffer,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLRenderbuffer(
+            context,
+            flags,
+            renderbuffer,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromGLRenderbuffer);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromGLRenderbuffer(
+        context,
+        flags,
+        renderbuffer,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_mem memobj,
@@ -6490,6 +11805,14 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLObjectInfo(
     cl_GLuint* gl_object_name)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clGetGLObjectInfo)->clGetGLObjectInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clGetGLObjectInfo),
+            memobj,
+            gl_object_type,
+            gl_object_name);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLObjectInfo(
             memobj,
@@ -6517,6 +11840,27 @@ static cl_int CL_API_CALL clGetGLObjectInfo_disp(
         gl_object_name);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLObjectInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj,
+    cl_gl_object_type* gl_object_type,
+    cl_GLuint* gl_object_name)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetGLObjectInfo(
+            memobj,
+            gl_object_type,
+            gl_object_name);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(memobj)->clGetGLObjectInfo);
+    return KHR_ICD2_DISPATCH(memobj)->clGetGLObjectInfo(
+        memobj,
+        gl_object_type,
+        gl_object_name);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     cl_mem memobj,
@@ -6526,6 +11870,16 @@ CL_API_ENTRY cl_int CL_API_CALL clGetGLTextureInfo(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(memobj))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(memobj, clGetGLTextureInfo)->clGetGLTextureInfo(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(memobj, clGetGLTextureInfo),
+            memobj,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetGLTextureInfo(
             memobj,
@@ -6561,6 +11915,33 @@ static cl_int CL_API_CALL clGetGLTextureInfo_disp(
         param_value_size_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetGLTextureInfo_inst(
+    const cl_icd_instance_layer *layer,
+    cl_mem memobj,
+    cl_gl_texture_info param_name,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetGLTextureInfo(
+            memobj,
+            param_name,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(memobj, CL_INVALID_MEM_OBJECT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(memobj)->clGetGLTextureInfo);
+    return KHR_ICD2_DISPATCH(memobj)->clGetGLTextureInfo(
+        memobj,
+        param_name,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     cl_command_queue command_queue,
@@ -6571,6 +11952,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueAcquireGLObjects(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueAcquireGLObjects)->clEnqueueAcquireGLObjects(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueAcquireGLObjects),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueAcquireGLObjects(
             command_queue,
@@ -6610,6 +12002,36 @@ static cl_int CL_API_CALL clEnqueueAcquireGLObjects_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueAcquireGLObjects_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueAcquireGLObjects(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireGLObjects);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueAcquireGLObjects(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     cl_command_queue command_queue,
@@ -6620,6 +12042,17 @@ CL_API_ENTRY cl_int CL_API_CALL clEnqueueReleaseGLObjects(
     cl_event* event)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(command_queue))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(command_queue, clEnqueueReleaseGLObjects)->clEnqueueReleaseGLObjects(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(command_queue, clEnqueueReleaseGLObjects),
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clEnqueueReleaseGLObjects(
             command_queue,
@@ -6659,6 +12092,36 @@ static cl_int CL_API_CALL clEnqueueReleaseGLObjects_disp(
         event);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clEnqueueReleaseGLObjects_inst(
+    const cl_icd_instance_layer *layer,
+    cl_command_queue command_queue,
+    cl_uint num_objects,
+    const cl_mem* mem_objects,
+    cl_uint num_events_in_wait_list,
+    const cl_event* event_wait_list,
+    cl_event* event)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clEnqueueReleaseGLObjects(
+            command_queue,
+            num_objects,
+            mem_objects,
+            num_events_in_wait_list,
+            event_wait_list,
+            event);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(command_queue, CL_INVALID_COMMAND_QUEUE);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseGLObjects);
+    return KHR_ICD2_DISPATCH(command_queue)->clEnqueueReleaseGLObjects(
+        command_queue,
+        num_objects,
+        mem_objects,
+        num_events_in_wait_list,
+        event_wait_list,
+        event);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_context context,
@@ -6669,6 +12132,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture2D(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromGLTexture2D)->clCreateFromGLTexture2D(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromGLTexture2D),
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture2D(
             context,
@@ -6708,6 +12182,36 @@ static cl_mem CL_API_CALL clCreateFromGLTexture2D_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture2D_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLTexture2D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture2D);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture2D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_context context,
@@ -6718,6 +12222,17 @@ CL_API_ENTRY cl_mem CL_API_CALL clCreateFromGLTexture3D(
     cl_int* errcode_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(context))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(context, clCreateFromGLTexture3D)->clCreateFromGLTexture3D(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(context, clCreateFromGLTexture3D),
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clCreateFromGLTexture3D(
             context,
@@ -6757,6 +12272,36 @@ static cl_mem CL_API_CALL clCreateFromGLTexture3D_disp(
         errcode_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_mem CL_API_CALL clCreateFromGLTexture3D_inst(
+    const cl_icd_instance_layer *layer,
+    cl_context context,
+    cl_mem_flags flags,
+    cl_GLenum target,
+    cl_GLint miplevel,
+    cl_GLuint texture,
+    cl_int* errcode_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clCreateFromGLTexture3D(
+            context,
+            flags,
+            target,
+            miplevel,
+            texture,
+            errcode_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_HANDLE(context, CL_INVALID_CONTEXT);
+    KHR_ICD_VALIDATE_POINTER_RETURN_HANDLE(KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture3D);
+    return KHR_ICD2_DISPATCH(context)->clCreateFromGLTexture3D(
+        context,
+        flags,
+        target,
+        miplevel,
+        texture,
+        errcode_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -6773,6 +12318,19 @@ CL_API_ENTRY cl_int CL_API_CALL clGetKernelSubGroupInfoKHR(
     size_t* param_value_size_ret)
 {
 #if defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+    if (KHR_ICD_HAS_INSTANCE_LAYERS(in_kernel))
+        return KHR_ICD_INSTANCE_LAYER_FIRST_LAYER_DISPATCH(in_kernel, clGetKernelSubGroupInfoKHR)->clGetKernelSubGroupInfoKHR(
+            KHR_ICD_INSTANCE_LAYER_FIRST_LAYER(in_kernel, clGetKernelSubGroupInfoKHR),
+            in_kernel,
+            in_device,
+            param_name,
+            input_value_size,
+            input_value,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
     if (khrFirstLayer)
         return khrFirstLayer->dispatch.clGetKernelSubGroupInfoKHR(
             in_kernel,
@@ -6820,6 +12378,42 @@ static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_disp(
         param_value_size_ret);
 }
 #endif // defined(CL_ENABLE_LAYERS)
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+static cl_int CL_API_CALL clGetKernelSubGroupInfoKHR_inst(
+    const cl_icd_instance_layer *layer,
+    cl_kernel in_kernel,
+    cl_device_id in_device,
+    cl_kernel_sub_group_info param_name,
+    size_t input_value_size,
+    const void* input_value,
+    size_t param_value_size,
+    void* param_value,
+    size_t* param_value_size_ret)
+{
+    (void)layer;
+    if (khrFirstLayer)
+        return khrFirstLayer->dispatch.clGetKernelSubGroupInfoKHR(
+            in_kernel,
+            in_device,
+            param_name,
+            input_value_size,
+            input_value,
+            param_value_size,
+            param_value,
+            param_value_size_ret);
+    KHR_ICD_VALIDATE_HANDLE_RETURN_ERROR(in_kernel, CL_INVALID_KERNEL);
+    KHR_ICD_VALIDATE_POINTER_RETURN_ERROR(KHR_ICD2_DISPATCH(in_kernel)->clGetKernelSubGroupInfoKHR);
+    return KHR_ICD2_DISPATCH(in_kernel)->clGetKernelSubGroupInfoKHR(
+        in_kernel,
+        in_device,
+        param_name,
+        input_value_size,
+        input_value,
+        param_value_size,
+        param_value,
+        param_value_size_ret);
+}
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -7030,6 +12624,412 @@ const struct _cl_icd_dispatch khrMainDispatch = {
 }
 ;
 #endif // defined(CL_ENABLE_LAYERS)
+
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) && defined(CL_ENABLE_LAYERS)
+extern clGetPlatformIDsForInstanceKHR_instance_t clGetPlatformIDsForInstanceKHR_inst;
+
+struct KHRInstanceLayerItem khrInstanceLayerTerminator = {
+  { &khrInstanceLayerTerminator.dispatch, NULL, NULL},
+  {
+  &clGetPlatformIDsForInstanceKHR_inst,
+  /* OpenCL 1.0 */
+  &clGetPlatformInfo_inst,
+  &clGetDeviceIDs_inst,
+  &clGetDeviceInfo_inst,
+  &clCreateContext_inst,
+  &clCreateContextFromType_inst,
+  &clRetainContext_inst,
+  &clReleaseContext_inst,
+  &clGetContextInfo_inst,
+  &clCreateCommandQueue_inst,
+  &clRetainCommandQueue_inst,
+  &clReleaseCommandQueue_inst,
+  &clGetCommandQueueInfo_inst,
+  &clSetCommandQueueProperty_inst,
+  &clCreateBuffer_inst,
+  &clCreateImage2D_inst,
+  &clCreateImage3D_inst,
+  &clRetainMemObject_inst,
+  &clReleaseMemObject_inst,
+  &clGetSupportedImageFormats_inst,
+  &clGetMemObjectInfo_inst,
+  &clGetImageInfo_inst,
+  &clCreateSampler_inst,
+  &clRetainSampler_inst,
+  &clReleaseSampler_inst,
+  &clGetSamplerInfo_inst,
+  &clCreateProgramWithSource_inst,
+  &clCreateProgramWithBinary_inst,
+  &clRetainProgram_inst,
+  &clReleaseProgram_inst,
+  &clBuildProgram_inst,
+  &clGetProgramInfo_inst,
+  &clGetProgramBuildInfo_inst,
+  &clCreateKernel_inst,
+  &clCreateKernelsInProgram_inst,
+  &clRetainKernel_inst,
+  &clReleaseKernel_inst,
+  &clSetKernelArg_inst,
+  &clGetKernelInfo_inst,
+  &clGetKernelWorkGroupInfo_inst,
+  &clWaitForEvents_inst,
+  &clGetEventInfo_inst,
+  &clRetainEvent_inst,
+  &clReleaseEvent_inst,
+  &clGetEventProfilingInfo_inst,
+  &clFlush_inst,
+  &clFinish_inst,
+  &clEnqueueReadBuffer_inst,
+  &clEnqueueWriteBuffer_inst,
+  &clEnqueueCopyBuffer_inst,
+  &clEnqueueReadImage_inst,
+  &clEnqueueWriteImage_inst,
+  &clEnqueueCopyImage_inst,
+  &clEnqueueCopyImageToBuffer_inst,
+  &clEnqueueCopyBufferToImage_inst,
+  &clEnqueueMapBuffer_inst,
+  &clEnqueueMapImage_inst,
+  &clEnqueueUnmapMemObject_inst,
+  &clEnqueueNDRangeKernel_inst,
+  &clEnqueueTask_inst,
+  &clEnqueueNativeKernel_inst,
+  &clEnqueueMarker_inst,
+  &clEnqueueWaitForEvents_inst,
+  &clEnqueueBarrier_inst,
+  &clCreateFromGLBuffer_inst,
+  &clCreateFromGLTexture2D_inst,
+  &clCreateFromGLTexture3D_inst,
+  &clCreateFromGLRenderbuffer_inst,
+  &clGetGLObjectInfo_inst,
+  &clGetGLTextureInfo_inst,
+  &clEnqueueAcquireGLObjects_inst,
+  &clEnqueueReleaseGLObjects_inst,
+  &clGetGLContextInfoKHR_inst,
+
+  /* cl_khr_d3d10_sharing */
+#ifdef _WIN32
+  &clGetDeviceIDsFromD3D10KHR_inst,
+  &clCreateFromD3D10BufferKHR_inst,
+  &clCreateFromD3D10Texture2DKHR_inst,
+  &clCreateFromD3D10Texture3DKHR_inst,
+  &clEnqueueAcquireD3D10ObjectsKHR_inst,
+  &clEnqueueReleaseD3D10ObjectsKHR_inst,
+#else
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+#endif
+
+  /* OpenCL 1.1 */
+  &clSetEventCallback_inst,
+  &clCreateSubBuffer_inst,
+  &clSetMemObjectDestructorCallback_inst,
+  &clCreateUserEvent_inst,
+  &clSetUserEventStatus_inst,
+  &clEnqueueReadBufferRect_inst,
+  &clEnqueueWriteBufferRect_inst,
+  &clEnqueueCopyBufferRect_inst,
+
+  /* cl_ext_device_fission */
+  &clCreateSubDevicesEXT_inst,
+  &clRetainDeviceEXT_inst,
+  &clReleaseDeviceEXT_inst,
+
+  /* cl_khr_gl_event */
+  &clCreateEventFromGLsyncKHR_inst,
+
+  /* OpenCL 1.2 */
+  &clCreateSubDevices_inst,
+  &clRetainDevice_inst,
+  &clReleaseDevice_inst,
+  &clCreateImage_inst,
+  &clCreateProgramWithBuiltInKernels_inst,
+  &clCompileProgram_inst,
+  &clLinkProgram_inst,
+  &clUnloadPlatformCompiler_inst,
+  &clGetKernelArgInfo_inst,
+  &clEnqueueFillBuffer_inst,
+  &clEnqueueFillImage_inst,
+  &clEnqueueMigrateMemObjects_inst,
+  &clEnqueueMarkerWithWaitList_inst,
+  &clEnqueueBarrierWithWaitList_inst,
+  &clGetExtensionFunctionAddressForPlatform_inst,
+  &clCreateFromGLTexture_inst,
+
+  /* cl_khr_d3d11_sharing and cl_khr_dx9_media_sharing */
+#ifdef _WIN32
+  &clGetDeviceIDsFromD3D11KHR_inst,
+  &clCreateFromD3D11BufferKHR_inst,
+  &clCreateFromD3D11Texture2DKHR_inst,
+  &clCreateFromD3D11Texture3DKHR_inst,
+  &clCreateFromDX9MediaSurfaceKHR_inst,
+  &clEnqueueAcquireD3D11ObjectsKHR_inst,
+  &clEnqueueReleaseD3D11ObjectsKHR_inst,
+  &clGetDeviceIDsFromDX9MediaAdapterKHR_inst,
+  &clEnqueueAcquireDX9MediaSurfacesKHR_inst,
+  &clEnqueueReleaseDX9MediaSurfacesKHR_inst,
+#else
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+#endif
+
+  /* cl_khr_egl_image */
+  &clCreateFromEGLImageKHR_inst,
+  &clEnqueueAcquireEGLObjectsKHR_inst,
+  &clEnqueueReleaseEGLObjectsKHR_inst,
+
+  /* cl_khr_egl_event */
+  &clCreateEventFromEGLSyncKHR_inst,
+
+  /* OpenCL 2.0 */
+  &clCreateCommandQueueWithProperties_inst,
+  &clCreatePipe_inst,
+  &clGetPipeInfo_inst,
+  &clSVMAlloc_inst,
+  &clSVMFree_inst,
+  &clEnqueueSVMFree_inst,
+  &clEnqueueSVMMemcpy_inst,
+  &clEnqueueSVMMemFill_inst,
+  &clEnqueueSVMMap_inst,
+  &clEnqueueSVMUnmap_inst,
+  &clCreateSamplerWithProperties_inst,
+  &clSetKernelArgSVMPointer_inst,
+  &clSetKernelExecInfo_inst,
+
+  /* cl_khr_sub_groups */
+  &clGetKernelSubGroupInfoKHR_inst,
+
+  /* OpenCL 2.1 */
+  &clCloneKernel_inst,
+  &clCreateProgramWithIL_inst,
+  &clEnqueueSVMMigrateMem_inst,
+  &clGetDeviceAndHostTimer_inst,
+  &clGetHostTimer_inst,
+  &clGetKernelSubGroupInfo_inst,
+  &clSetDefaultDeviceCommandQueue_inst,
+
+  /* OpenCL 2.2 */
+  &clSetProgramReleaseCallback_inst,
+  &clSetProgramSpecializationConstant_inst,
+
+  /* OpenCL 3.0 */
+  &clCreateBufferWithProperties_inst,
+  &clCreateImageWithProperties_inst,
+  &clSetContextDestructorCallback_inst,
+}
+,
+  {
+  &khrInstanceLayerTerminator.layer,
+  /* OpenCL 1.0 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_khr_d3d10_sharing */
+#ifdef _WIN32
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+#else
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+#endif
+
+  /* OpenCL 1.1 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_ext_device_fission */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_khr_gl_event */
+  &khrInstanceLayerTerminator.layer,
+
+  /* OpenCL 1.2 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_khr_d3d11_sharing and cl_khr_dx9_media_sharing */
+#ifdef _WIN32
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+#else
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+  NULL,
+#endif
+
+  /* cl_khr_egl_image */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_khr_egl_event */
+  &khrInstanceLayerTerminator.layer,
+
+  /* OpenCL 2.0 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* cl_khr_sub_groups */
+  &khrInstanceLayerTerminator.layer,
+
+  /* OpenCL 2.1 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* OpenCL 2.2 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+
+  /* OpenCL 3.0 */
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+  &khrInstanceLayerTerminator.layer,
+}
+,
+  NULL, NULL};
+#endif
 
 #if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH) || defined(CL_ENABLE_LAYERS)
 ///////////////////////////////////////////////////////////////////////////////
