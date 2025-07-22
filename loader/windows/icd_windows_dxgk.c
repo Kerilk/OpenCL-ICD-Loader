@@ -29,7 +29,7 @@ typedef LONG NTSTATUS;
 #define NT_SUCCESS(status) (((NTSTATUS)(status)) >= 0)
 #endif
 
-bool khrIcdOsVendorsEnumerateDXGK(void)
+bool khrIcdOsVendorsEnumerateDXGK(WinAdapterList *adapterList)
 {
     bool ret = false;
     int result = 0;
@@ -161,7 +161,7 @@ bool khrIcdOsVendorsEnumerateDXGK(void)
                 }
                 else
                 {
-                    ret |= adapterAdd(cszLibraryName, EnumAdapters.adapters[AdapterIndex].luid);
+                    ret |= adapterAdd(adapterList, cszLibraryName, EnumAdapters.adapters[AdapterIndex].luid);
                 }
             }
             else if (status == (NTSTATUS)STATUS_INVALID_PARAMETER)
