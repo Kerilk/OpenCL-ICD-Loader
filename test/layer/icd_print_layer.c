@@ -21,11 +21,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+#if !defined(CL_LAYER_API_VERSION_200)
+#define CL_LAYER_API_VERSION_200 200
+#endif //!defined(CL_LAYER_API_VERSION_200)
 
 const struct _cl_icd_dispatch *tdispatch;
 
+#ifdef CL_USE_LAYER_API_200
+static cl_layer_api_version api_version = CL_LAYER_API_VERSION_200;
+static const char name[] = "print_layer_200";
+#else
 static cl_layer_api_version api_version = CL_LAYER_API_VERSION_100;
 static const char name[] = "print_layer";
+#endif
 
 static inline cl_int
 set_param_value(
@@ -70,6 +78,11 @@ clGetLayerInfo(
   return set_param_value(param_value_size, param_value, param_value_size_ret, sz, src);
 }
 
+static void deinitLayer(void) {
+  printf("Exiting print layer, API version: %d\n", api_version);
+  tdispatch = NULL;
+}
+
 CL_API_ENTRY cl_int CL_API_CALL
 clInitLayer(
     cl_uint                         num_entries,
@@ -83,7 +96,17 @@ clInitLayer(
   *layer_dispatch_ret = &dispatch;
   *num_entries_out = sizeof(dispatch)/sizeof(dispatch.clGetPlatformIDs);
 
+#ifndef CL_USE_LAYER_API_200
+  atexit(deinitLayer);
+#endif
+
   return CL_SUCCESS;
 }
 
-
+#ifdef CL_USE_LAYER_API_200
+CL_API_ENTRY cl_int CL_API_CALL
+clDeinitLayer(void) {
+  deinitLayer();
+  return CL_SUCCESS;
+}
+#endif

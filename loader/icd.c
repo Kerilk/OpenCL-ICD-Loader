@@ -19,14 +19,13 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
-#if defined(CL_ENABLE_LAYERS)
-#include <CL/cl_layer.h>
-#endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+static KHRicdVendor *lastVendor = NULL;
 int khrEnableTrace = 0;
+static int khrDisableLibraryUnloading = 0;
 
 #if defined(CL_ENABLE_LAYERS)
 struct KHRLayer *khrFirstLayer = NULL;
@@ -42,6 +41,26 @@ void khrIcdInitializeTrace(void)
             strcmp(enableTrace, "1") == 0))
     {
         khrEnableTrace = 1;
+    }
+    if (enableTrace)
+    {
+        khrIcd_free_getenv(enableTrace);
+    }
+}
+
+void khrIcdInitializeLibraryUnloading(void)
+{
+    char *disableLibraryUnloading = khrIcd_getenv("OCL_ICD_DISABLE_DYNAMIC_LIBRARY_UNLOADING");
+    if (disableLibraryUnloading && (strcmp(disableLibraryUnloading, "True") == 0 ||
+            strcmp(disableLibraryUnloading, "true") == 0 ||
+            strcmp(disableLibraryUnloading, "T") == 0 ||
+            strcmp(disableLibraryUnloading, "1") == 0))
+    {
+        khrDisableLibraryUnloading = 1;
+    }
+    if (disableLibraryUnloading)
+    {
+        khrIcd_free_getenv(disableLibraryUnloading);
     }
 }
 
@@ -186,6 +205,14 @@ void khrIcdVendorAdd(const char *libraryName)
 #endif
 
         // call clGetPlatformInfo on the returned platform to get the suffix
+
+        KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
+            platforms[i],
+            CL_PLATFORM_UNLOADABLE_KHR,
+            sizeof(vendor->unloadable),
+            &vendor->unloadable,
+            NULL);
+
         result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
@@ -230,11 +257,13 @@ void khrIcdVendorAdd(const char *libraryName)
         vendor->suffix = suffix;
 
         // add this vendor to the list of vendors at the tail
-        {
-            KHRicdVendor **prevNextPointer = NULL;
-            for (prevNextPointer = &khrIcdVendors; *prevNextPointer; prevNextPointer = &( (*prevNextPointer)->next) );
-            *prevNextPointer = vendor;
+        if (lastVendor) {
+            lastVendor->next = vendor;
+            vendor->prev = lastVendor;
+        } else {
+            khrIcdVendors = vendor;
         }
+        lastVendor = vendor;
 
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
 
@@ -259,6 +288,7 @@ void khrIcdLayerAdd(const char *libraryName)
     cl_int result = CL_SUCCESS;
     pfn_clGetLayerInfo p_clGetLayerInfo = NULL;
     pfn_clInitLayer p_clInitLayer = NULL;
+    pfn_clDeinitLayer p_clDeinitLayer = NULL;
     struct KHRLayer *layerIterator = NULL;
     struct KHRLayer *layer = NULL;
     cl_layer_api_version api_version = 0;
@@ -315,10 +345,20 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    if (CL_LAYER_API_VERSION_100 != api_version)
+    if (CL_LAYER_API_VERSION_100 != api_version && CL_LAYER_API_VERSION_200 != api_version)
     {
         KHR_ICD_TRACE("unsupported api version\n");
         goto Done;
+    }
+
+    if (CL_LAYER_API_VERSION_200 == api_version)
+    {
+        p_clDeinitLayer = (pfn_clDeinitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clDeinitLayer");
+        if (!p_clDeinitLayer)
+        {
+            KHR_ICD_TRACE("failed to get function address clDeinitLayer\n");
+            goto Done;
+        }
     }
 
     layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
@@ -338,9 +378,10 @@ void khrIcdLayerAdd(const char *libraryName)
             goto Done;
         }
         memcpy(layer->libraryName, libraryName, sz_name);
-        layer->p_clGetLayerInfo = (void *)(size_t)p_clGetLayerInfo;
+        layer->p_clGetLayerInfo = p_clGetLayerInfo;
     }
 #endif
+    layer->p_clDeinitLayer = p_clDeinitLayer;
 
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);
@@ -472,3 +513,45 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+static struct KHRLayer deinitLayer = {0};
+#endif
+
+void khrIcdDeinitialize(void) {
+
+    KHR_ICD_TRACE("ICD Loader deinitialization\n");
+
+#if defined(CL_ENABLE_LAYERS)
+    // free layers first in reverse order of their creation (front to back)
+    // they may still need to use vendors while terminating
+    KHR_ICD_TRACE("Finalizing and unloading layers\n");
+    struct KHRLayer *head = khrFirstLayer;
+    deinitLayer.dispatch = khrDeinitDispatch;
+    khrFirstLayer = &deinitLayer;
+
+    while(head) {
+        struct KHRLayer *cur = head;
+#ifdef CL_LAYER_INFO
+        free(cur->libraryName);
+#endif
+        if (cur->p_clDeinitLayer)
+            cur->p_clDeinitLayer();
+        if (cur->p_clDeinitLayer && !khrDisableLibraryUnloading)
+            khrIcdOsLibraryUnload(cur->library);
+        head = cur->next;
+        free(cur);
+    }
+#endif // defined(CL_ENABLE_LAYERS)
+
+    // free vendor in reverse order of their creation (back to front)
+    KHR_ICD_TRACE("Finalizing and unloading vendors\n");
+    while (lastVendor) {
+        KHRicdVendor *cur = lastVendor;
+        free(cur->suffix);
+        if (cur->unloadable && !khrDisableLibraryUnloading)
+            khrIcdOsLibraryUnload(cur->library);
+        lastVendor = cur->prev;
+        free(cur);
+    }
+    khrIcdVendors = NULL;
+}

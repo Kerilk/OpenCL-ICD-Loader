@@ -50,7 +50,7 @@ set_tests_properties(opencl_icd_loader_icd2_test
 if (ENABLE_OPENCL_LAYERINFO)
     set_tests_properties(cllayerinfo_test
         PROPERTIES
-            ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>
+            ENVIRONMENT OPENCL_LAYERS=$<TARGET_FILE:PrintLayer>:$<TARGET_FILE:PrintLayer200>
             WORKING_DIRECTORY "${TEST_WORKING_DIRECTORY}"
     )
 endif()
