@@ -19,30 +19,72 @@
 #include "icd.h"
 #include "icd_dispatch.h"
 #include "icd_envvars.h"
-#if defined(CL_ENABLE_LAYERS)
-#include <CL/cl_layer.h>
-#endif // defined(CL_ENABLE_LAYERS)
 #include <stdlib.h>
 #include <string.h>
 
 KHRicdVendor *khrIcdVendors = NULL;
+static KHRicdVendor *lastVendor = NULL;
 int khrEnableTrace = 0;
+static int khrDisableLibraryUnloading = 0;
+static int khrForceLegacyTermination = 0;
 
 #if defined(CL_ENABLE_LAYERS)
 struct KHRLayer *khrFirstLayer = NULL;
 #endif // defined(CL_ENABLE_LAYERS)
 
+static int khrIcdCheckEnvTrue(const char *variable)
+{
+    return (variable && (strcmp(variable, "True") == 0 ||
+                strcmp(variable, "true") == 0 ||
+                strcmp(variable, "T") == 0 ||
+                strcmp(variable, "1") == 0));
+}
+
 // entrypoint to check and initialize trace.
-void khrIcdInitializeTrace(void)
+static void khrIcdInitializeTrace(void)
 {
     char *enableTrace = khrIcd_getenv("OCL_ICD_ENABLE_TRACE");
-    if (enableTrace && (strcmp(enableTrace, "True") == 0 ||
-            strcmp(enableTrace, "true") == 0 ||
-            strcmp(enableTrace, "T") == 0 ||
-            strcmp(enableTrace, "1") == 0))
+    if (khrIcdCheckEnvTrue(enableTrace))
     {
         khrEnableTrace = 1;
     }
+    if (enableTrace)
+    {
+        khrIcd_free_getenv(enableTrace);
+    }
+}
+
+static void khrIcdInitializeLibraryUnloading(void)
+{
+    char *disableLibraryUnloading = khrIcd_getenv("OCL_ICD_DISABLE_DYNAMIC_LIBRARY_UNLOADING");
+    if (khrIcdCheckEnvTrue(disableLibraryUnloading))
+    {
+        khrDisableLibraryUnloading = 1;
+    }
+    if (disableLibraryUnloading)
+    {
+        khrIcd_free_getenv(disableLibraryUnloading);
+    }
+}
+
+static void khrIcdInitializeLegacyTermination(void)
+{
+    char *forceLegacyTermination = khrIcd_getenv("OCL_ICD_FORCE_LEGACY_TERMINATION");
+    if (khrIcdCheckEnvTrue(forceLegacyTermination))
+    {
+        khrForceLegacyTermination = 1;
+    }
+    if (forceLegacyTermination)
+    {
+        khrIcd_free_getenv(forceLegacyTermination);
+    }
+}
+
+void khrIcdInitializeEnvOptions(void)
+{
+    khrIcdInitializeTrace();
+    khrIcdInitializeLibraryUnloading();
+    khrIcdInitializeLegacyTermination();
 }
 
 // entrypoint to initialize the ICD and add all vendors
@@ -186,6 +228,14 @@ void khrIcdVendorAdd(const char *libraryName)
 #endif
 
         // call clGetPlatformInfo on the returned platform to get the suffix
+
+        KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
+            platforms[i],
+            CL_PLATFORM_UNLOADABLE_KHR,
+            sizeof(vendor->unloadable),
+            &vendor->unloadable,
+            NULL);
+
         result = KHR_ICD2_DISPATCH(platforms[i])->clGetPlatformInfo(
             platforms[i],
             CL_PLATFORM_ICD_SUFFIX_KHR,
@@ -230,11 +280,13 @@ void khrIcdVendorAdd(const char *libraryName)
         vendor->suffix = suffix;
 
         // add this vendor to the list of vendors at the tail
-        {
-            KHRicdVendor **prevNextPointer = NULL;
-            for (prevNextPointer = &khrIcdVendors; *prevNextPointer; prevNextPointer = &( (*prevNextPointer)->next) );
-            *prevNextPointer = vendor;
+        if (lastVendor) {
+            lastVendor->next = vendor;
+            vendor->prev = lastVendor;
+        } else {
+            khrIcdVendors = vendor;
         }
+        lastVendor = vendor;
 
         KHR_ICD_TRACE("successfully added vendor %s with suffix %s\n", libraryName, suffix);
 
@@ -259,6 +311,8 @@ void khrIcdLayerAdd(const char *libraryName)
     cl_int result = CL_SUCCESS;
     pfn_clGetLayerInfo p_clGetLayerInfo = NULL;
     pfn_clInitLayer p_clInitLayer = NULL;
+    pfn_clInitLayerWithProperties p_clInitLayerWithProperties = NULL;
+    pfn_clDeinitLayer p_clDeinitLayer = NULL;
     struct KHRLayer *layerIterator = NULL;
     struct KHRLayer *layer = NULL;
     cl_layer_api_version api_version = 0;
@@ -300,14 +354,6 @@ void khrIcdLayerAdd(const char *libraryName)
         goto Done;
     }
 
-    // use that function to get the clInitLayer function pointer
-    p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
-    if (!p_clInitLayer)
-    {
-        KHR_ICD_TRACE("failed to get function address clInitLayer\n");
-        goto Done;
-    }
-
     result = p_clGetLayerInfo(CL_LAYER_API_VERSION, sizeof(api_version), &api_version, NULL);
     if (CL_SUCCESS != result)
     {
@@ -319,6 +365,31 @@ void khrIcdLayerAdd(const char *libraryName)
     {
         KHR_ICD_TRACE("unsupported api version\n");
         goto Done;
+    }
+
+    // Support old version of layers, which should rely on at_exit for termination.
+    // In this case use clInitLayer to initialize layers
+    if (khrForceLegacyTermination)
+    {
+        p_clInitLayer = (pfn_clInitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayer");
+        if (!p_clInitLayer)
+        {
+            KHR_ICD_TRACE("failed to get function address clInitLayer\n");
+            goto Done;
+        }
+    } else { // New scheme, relies on clInitLayerWithProperties and the optional clDeinitLayer for termination
+        p_clInitLayerWithProperties = (pfn_clInitLayerWithProperties)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clInitLayerWithProperties");
+        if (!p_clInitLayerWithProperties)
+        {
+            KHR_ICD_TRACE("failed to get function address clInitLayerWithProperties\n");
+            goto Done;
+        }
+
+        p_clDeinitLayer = (pfn_clDeinitLayer)(size_t)khrIcdOsLibraryGetFunctionAddress(library, "clDeinitLayer");
+        if (!p_clDeinitLayer)
+        {
+            KHR_ICD_TRACE("failed to get function address clDeinitLayer\n");
+        }
     }
 
     layer = (struct KHRLayer*)calloc(sizeof(struct KHRLayer), 1);
@@ -338,9 +409,10 @@ void khrIcdLayerAdd(const char *libraryName)
             goto Done;
         }
         memcpy(layer->libraryName, libraryName, sz_name);
-        layer->p_clGetLayerInfo = (void *)(size_t)p_clGetLayerInfo;
+        layer->p_clGetLayerInfo = p_clGetLayerInfo;
     }
 #endif
+    layer->p_clDeinitLayer = p_clDeinitLayer;
 
     if (khrFirstLayer) {
         targetDispatch = &(khrFirstLayer->dispatch);
@@ -349,11 +421,21 @@ void khrIcdLayerAdd(const char *libraryName)
     }
 
     loaderDispatchNumEntries = sizeof(khrMainDispatch)/sizeof(void*);
-    result = p_clInitLayer(
-        loaderDispatchNumEntries,
-        targetDispatch,
-        &layerDispatchNumEntries,
-        &layerDispatch);
+    if (khrForceLegacyTermination)
+    {
+        result = p_clInitLayer(
+            loaderDispatchNumEntries,
+            targetDispatch,
+            &layerDispatchNumEntries,
+            &layerDispatch);
+    } else {
+        result = p_clInitLayerWithProperties(
+            loaderDispatchNumEntries,
+            targetDispatch,
+            &layerDispatchNumEntries,
+            &layerDispatch,
+            NULL);
+    }
     if (CL_SUCCESS != result)
     {
         KHR_ICD_TRACE("failed to initialize layer\n");
@@ -472,3 +554,50 @@ void khrIcdContextPropertiesGetPlatform(const cl_context_properties *properties,
     }
 }
 
+#if defined(CL_ENABLE_LAYERS)
+static struct KHRLayer deinitLayer = {0};
+#endif
+
+void khrIcdDeinitialize(void) {
+    if (khrForceLegacyTermination)
+    {
+        KHR_ICD_TRACE("ICD Loader deinitialization disabled\n");
+        return;
+    }
+
+    KHR_ICD_TRACE("ICD Loader deinitialization\n");
+
+#if defined(CL_ENABLE_LAYERS)
+    // free layers first in reverse order of their creation (front to back)
+    // they may still need to use vendors while terminating
+    KHR_ICD_TRACE("Finalizing and unloading layers\n");
+    struct KHRLayer *head = khrFirstLayer;
+    deinitLayer.dispatch = khrDeinitDispatch;
+    khrFirstLayer = &deinitLayer;
+
+    while(head) {
+        struct KHRLayer *cur = head;
+#ifdef CL_LAYER_INFO
+        free(cur->libraryName);
+#endif
+        if (cur->p_clDeinitLayer)
+            cur->p_clDeinitLayer();
+        if (!khrDisableLibraryUnloading)
+            khrIcdOsLibraryUnload(cur->library);
+        head = cur->next;
+        free(cur);
+    }
+#endif // defined(CL_ENABLE_LAYERS)
+
+    // free vendor in reverse order of their creation (back to front)
+    KHR_ICD_TRACE("Finalizing and unloading vendors\n");
+    while (lastVendor) {
+        KHRicdVendor *cur = lastVendor;
+        free(cur->suffix);
+        if (cur->unloadable && !khrDisableLibraryUnloading)
+            khrIcdOsLibraryUnload(cur->library);
+        lastVendor = cur->prev;
+        free(cur);
+    }
+    khrIcdVendors = NULL;
+}
