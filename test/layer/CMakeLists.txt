@@ -20,3 +20,26 @@ target_compile_definitions (PrintLayer PRIVATE CL_TARGET_OPENCL_VERSION=300)
 if (NOT WIN32 AND NOT APPLE)
   set_target_properties (PrintLayer PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/icd_print_layer.map")
 endif ()
+
+set (OPENCL_PRINT_LAYER_NEW_SOURCES
+    icd_print_layer.c
+    icd_print_layer.h
+    icd_print_layer_generated.c)
+
+if (WIN32)
+    list (APPEND OPENCL_PRINT_LAYER_NEW_SOURCES icd_print_layer_new.def)
+else ()
+    if (NOT APPLE)
+        list (APPEND OPENCL_PRINT_LAYER_NEW_SOURCES icd_print_layer_new.map)
+    endif ()
+endif ()
+
+add_library (PrintLayerNew SHARED ${OPENCL_PRINT_LAYER_NEW_SOURCES})
+
+target_include_directories(PrintLayerNew PRIVATE ${PARENT_DIR}/include)
+target_link_libraries(PrintLayerNew PUBLIC OpenCL::Headers)
+target_compile_definitions (PrintLayerNew PRIVATE CL_TARGET_OPENCL_VERSION=300 CL_USE_LAYER_API_NEW=1)
+
+if (NOT WIN32 AND NOT APPLE)
+  set_target_properties (PrintLayerNew PROPERTIES LINK_FLAGS "-Wl,--version-script -Wl,${CMAKE_CURRENT_SOURCE_DIR}/icd_print_layer_new.map")
+endif ()
