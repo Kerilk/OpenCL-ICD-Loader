@@ -113,6 +113,16 @@ struct KHRicdVendorRec
     KHRicdVendor *prev;
 };
 
+#if defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+struct _cl_instance_khr
+{
+    cl_uint num_platforms;
+    cl_platform_id *platforms;
+    KHRicdVendor **vendors;
+    struct KHRDisp *dispDatas;
+};
+#endif // defined(CL_ENABLE_LOADER_MANAGED_DISPATCH)
+
 // the global state
 extern KHRicdVendor * khrIcdVendors;
 
