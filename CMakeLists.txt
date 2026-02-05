@@ -68,6 +68,32 @@ check_function_exists(__secure_getenv HAVE___SECURE_GETENV)
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/loader/icd_cmake_config.h.in
     ${CMAKE_CURRENT_BINARY_DIR}/icd_cmake_config.h)
 
+set (OPENCL_SYSTEM_LIBRARY_SOURCES
+    loader/icd_trace.c
+    loader/icd_trace.h
+    loader/icd_library.h
+    loader/icd_envvars.h)
+if (WIN32)
+    list (APPEND OPENCL_SYSTEM_LIBRARY_SOURCES
+        loader/windows/icd_windows_formats.h
+        loader/windows/icd_windows_library.c
+        loader/windows/icd_windows_envvars.c)
+else ()
+    list (APPEND OPENCL_SYSTEM_LIBRARY_SOURCES
+        loader/linux/icd_linux_library.c
+        loader/linux/icd_linux_envvars.c)
+endif ()
+
+add_library (OpenCLSystemLibrary OBJECT ${OPENCL_SYSTEM_LIBRARY_SOURCES})
+target_link_libraries (OpenCLSystemLibrary PUBLIC ${CMAKE_DL_LIBS})
+target_include_directories (OpenCLSystemLibrary
+  PRIVATE
+    ${CMAKE_CURRENT_BINARY_DIR}
+    loader)
+if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS})
+    set_property(TARGET OpenCLSystemLibrary PROPERTY POSITION_INDEPENDENT_CODE ON)
+endif ()
+
 set (OPENCL_ICD_LOADER_SOURCES
     loader/icd.c
     loader/icd.h
@@ -75,10 +101,6 @@ set (OPENCL_ICD_LOADER_SOURCES
     loader/icd_dispatch.c
     loader/icd_dispatch.h
     loader/icd_dispatch_generated.c
-    loader/icd_trace.c
-    loader/icd_trace.h
-    loader/icd_library.h
-    loader/icd_envvars.h
     loader/icd_platform.h)
 include_directories (include)
 
@@ -87,11 +109,8 @@ if (WIN32)
         loader/windows/adapter.h
         loader/windows/icd_windows.c
         loader/windows/icd_windows.h
-        loader/windows/icd_windows_formats.h
         loader/windows/icd_windows_dxgk.c
         loader/windows/icd_windows_dxgk.h
-        loader/windows/icd_windows_library.c
-        loader/windows/icd_windows_envvars.c
         loader/windows/icd_windows_hkr.c
         loader/windows/icd_windows_hkr.h
         loader/windows/icd_windows_apppackage.c
@@ -114,8 +133,6 @@ if (WIN32)
 else ()
     list (APPEND OPENCL_ICD_LOADER_SOURCES
         loader/linux/icd_linux.c
-        loader/linux/icd_linux_library.c
-        loader/linux/icd_linux_envvars.c
         loader/linux/icd_exports.map)
 endif ()
 
@@ -182,7 +199,7 @@ target_include_directories (OpenCL
     ${CMAKE_CURRENT_BINARY_DIR}
     loader
 )
-target_link_libraries (OpenCL PUBLIC ${CMAKE_DL_LIBS})
+target_link_libraries (OpenCL PRIVATE OpenCLSystemLibrary)
 
 if (ENABLE_OPENCL_LAYERINFO)
 
@@ -213,7 +230,7 @@ if (ENABLE_OPENCL_LAYERINFO)
     target_link_libraries (cllayerinfo PRIVATE ${CMAKE_THREAD_LIBS_INIT})
   endif ()
 
-  target_link_libraries (cllayerinfo PUBLIC ${CMAKE_DL_LIBS})
+  target_link_libraries (cllayerinfo PRIVATE OpenCLSystemLibrary)
 
   target_include_directories (cllayerinfo
     PRIVATE
@@ -230,46 +247,30 @@ endif()
 if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR OPENCL_ICD_LOADER_BUILD_TESTING) AND BUILD_TESTING)
     add_subdirectory (test)
 
-    set (CL_PLUGIN_LOADER_TEST_SOURCES
-        test/plugin_test/cl_plugin_loader_test.c
-        test/plugin_test/cl_plugin.h
-        loader/icd_envvars.h
-        loader/icd_trace.c
-        loader/icd_trace.h
-        loader/icd_library.h
-    )
+    if (${OPENCL_ICD_LOADER_BUILD_SHARED_LIBS})
+        set (CL_PLUGIN_LOADER_TEST_SOURCES
+            test/plugin_test/cl_plugin_loader_test.c
+            test/plugin_test/cl_plugin.h
+        )
 
-    if (WIN32)
-        list (APPEND CL_PLUGIN_LOADER_TEST_SOURCES
-            loader/windows/icd_windows_formats.h
-            loader/windows/icd_windows_envvars.c
-            loader/windows/icd_windows_library.c)
-        # Only add the DXSDK include directory if the environment variable is
-        # defined.  Since the DXSDK has merged into the Windows SDK, this is
-        # only required in rare cases.
-        if (DEFINED ENV{DXSDK_DIR} AND NOT (MINGW OR MSYS OR CYGWIN))
-            include_directories ($ENV{DXSDK_DIR}/Include)
-        endif ()
-    else ()
-        list (APPEND CL_PLUGIN_LOADER_TEST_SOURCES
-            loader/linux/icd_linux_envvars.c
-            loader/linux/icd_linux_library.c)
+        add_executable(cl_plugin_loader_test ${CL_PLUGIN_LOADER_TEST_SOURCES})
+
+        add_executable(OpenCL::cl_plugin_loader_test ALIAS cl_plugin_loader_test)
+
+        target_link_libraries (cl_plugin_loader_test PRIVATE OpenCLSystemLibrary)
+
+        target_include_directories (cl_plugin_loader_test
+          PRIVATE
+            ${CMAKE_CURRENT_BINARY_DIR}
+            loader
+            test/plugin_test)
     endif ()
-
-    add_executable(cl_plugin_loader_test ${CL_PLUGIN_LOADER_TEST_SOURCES})
-
-    add_executable(OpenCL::cl_plugin_loader_test ALIAS cl_plugin_loader_test)
-
-    target_link_libraries (cl_plugin_loader_test PUBLIC ${CMAKE_DL_LIBS})
-
-    target_include_directories (cl_plugin_loader_test
-      PRIVATE
-        ${CMAKE_CURRENT_BINARY_DIR}
-        loader
-        test/plugin_test)
 endif ()
 
-
+install(
+  TARGETS OpenCLSystemLibrary
+  EXPORT OpenCLICDLoaderTargets
+)
 install(
   TARGETS OpenCL
   EXPORT OpenCLICDLoaderTargets
